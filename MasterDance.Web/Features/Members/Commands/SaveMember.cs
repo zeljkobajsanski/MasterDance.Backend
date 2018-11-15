@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using FluentValidation;
 using MasterDance.Web.Data;
+using MasterDance.Web.Data.Entities;
 using MediatR;
 
 namespace MasterDance.Web.Features.Members.Commands
@@ -40,15 +41,7 @@ namespace MasterDance.Web.Features.Members.Commands
             public async Task<int> Handle(Command request, CancellationToken cancellationToken)
             {
                 var member = _mapper.Map<Member>(request);
-                if (request.Id == 0)
-                {
-                    _context.Members.Add(member);
-                }
-                else
-                {
-                    _context.Update(member);
-                }
-
+                _context.Members.Upsert(member);
                 await _context.SaveChangesAsync(cancellationToken);
                 return member.Id;
             }

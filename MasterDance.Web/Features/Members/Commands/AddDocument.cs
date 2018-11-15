@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using FluentValidation;
 using MasterDance.Web.Data;
+using MasterDance.Web.Data.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 

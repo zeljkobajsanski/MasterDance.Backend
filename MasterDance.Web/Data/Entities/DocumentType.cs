@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace MasterDance.Web.Data
+namespace MasterDance.Web.Data.Entities
 {
     public class DocumentType : IEntity
     {

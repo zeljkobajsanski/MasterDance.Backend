@@ -1,6 +1,6 @@
 using System;
 
-namespace MasterDance.Web.Data
+namespace MasterDance.Web.Data.Entities
 {
     public class Document : IEntity
     {

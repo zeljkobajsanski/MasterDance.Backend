@@ -1,3 +1,4 @@
+using MasterDance.Web.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace MasterDance.Web.Data

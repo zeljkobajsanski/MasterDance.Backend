@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using MasterDance.Web.Data.Entities;
 
 namespace MasterDance.Web.Data
 {

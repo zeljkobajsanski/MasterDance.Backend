@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace MasterDance.Web.Data
+namespace MasterDance.Web.Data.Entities
 {
     [Owned]
     public class Blob

@@ -1,5 +1,6 @@
 using AutoMapper;
 using MasterDance.Web.Data;
+using MasterDance.Web.Data.Entities;
 using MasterDance.Web.Features.Members.Queries;
 
 namespace MasterDance.Web.Features.Members
