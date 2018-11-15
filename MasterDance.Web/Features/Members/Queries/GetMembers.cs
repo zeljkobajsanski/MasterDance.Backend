@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using MasterDance.Web.Data;
 using MediatR;
@@ -24,15 +25,17 @@ namespace MasterDance.Web.Features.Members.Queries
         public class QueryHandler : IRequestHandler<Query, List<Model>>
         {
             private readonly MasterDanceContext _context;
+            private IMapper _mapper;
 
-            public QueryHandler(MasterDanceContext context)
+            public QueryHandler(MasterDanceContext context, IMapper mapper)
             {
                 _context = context;
+                _mapper = mapper;
             }
 
             public Task<List<Model>> Handle(Query request, CancellationToken cancellationToken)
             {
-                return _context.Members.ProjectTo<Model>().ToListAsync(cancellationToken);
+                return _context.Members.ProjectTo<Model>(_mapper.ConfigurationProvider).ToListAsync(cancellationToken);
             }
         }
     }
