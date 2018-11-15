@@ -22,6 +22,12 @@ namespace MasterDance.Web.Features.Members
             return Ok(await _mediator.Send<List<GetMembers.Model>>(new GetMembers.Query()));
         }
 
+        [HttpGet("{id}")]
+        public async Task<ActionResult<GetMemberById.Model>> GetMember([FromRoute]GetMemberById.Query query)
+        {
+            return Ok(await _mediator.Send(query));
+        }
+
         [HttpPost]
         public async Task<ActionResult<int>> Save([FromBody] SaveMember.Command command)
         {

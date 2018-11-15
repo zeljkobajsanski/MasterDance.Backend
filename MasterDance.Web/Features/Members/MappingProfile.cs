@@ -8,6 +8,7 @@ namespace MasterDance.Web.Features.Members
         public MappingProfile()
         {
             CreateMap<Member, Features.Members.GetMembers.Model>();
+            CreateMap<Member, Features.Members.GetMemberById.Model>();
         }
     }
 }
