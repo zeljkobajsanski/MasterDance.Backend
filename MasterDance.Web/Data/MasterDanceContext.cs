@@ -9,5 +9,6 @@ namespace MasterDance.Web.Data
         }
 
         public DbSet<Member> Members { get; set; }
+        public DbSet<DocumentType> DocumentTypes { get; set; }
     }
 }

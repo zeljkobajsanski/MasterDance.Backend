@@ -6,13 +6,18 @@ namespace MasterDance.Web.Data
     {
         public static void SeedDatabase(MasterDanceContext context)
         {
-            if (context.Members.Any())
+            if (!context.Members.Any())
             {
-                return;
+                context.Members.Add(new Member() {FirstName = "Jovana", LastName = "Bajsanski"});
+                context.SaveChanges();;
             }
 
-            context.Members.Add(new Member() {FirstName = "Jovana", LastName = "Bajsanski"});
-            context.SaveChanges();
+            if (!context.DocumentTypes.Any())
+            {
+                context.DocumentTypes.Add(new DocumentType() {Name = "Izvod iz maticne knjige rodjenih"});
+                context.DocumentTypes.Add(new DocumentType() {Name = "Lekarski pregled"});
+                context.SaveChanges();
+            }
         }
     }
 }
