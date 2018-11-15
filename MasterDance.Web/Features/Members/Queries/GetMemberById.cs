@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper.QueryableExtensions;
@@ -7,12 +5,14 @@ using MasterDance.Web.Data;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace MasterDance.Web.Features.Members
+namespace MasterDance.Web.Features.Members.Queries
 {
-    public class GetMembers
+    public class GetMemberById
     {
-        public class Query : IRequest, IRequest<List<Model>>
-        {}
+        public class Query : IRequest<Model>
+        {
+            public int Id { get; set; }
+        }
 
         public class Model
         {
@@ -22,7 +22,7 @@ namespace MasterDance.Web.Features.Members
             public string Image { get; set; }
         }
         
-        public class QueryHandler : IRequestHandler<Query, List<Model>>
+        public class QueryHandler : IRequestHandler<Query, Model>
         {
             private readonly MasterDanceContext _context;
 
@@ -31,9 +31,9 @@ namespace MasterDance.Web.Features.Members
                 _context = context;
             }
 
-            public Task<List<Model>> Handle(Query request, CancellationToken cancellationToken)
+            public Task<Model> Handle(Query request, CancellationToken cancellationToken)
             {
-                return _context.Members.ProjectTo<Model>().ToListAsync(cancellationToken);
+                return _context.Members.ProjectTo<Model>().SingleOrDefaultAsync(x => x.Id == request.Id, cancellationToken);
             }
         }
     }

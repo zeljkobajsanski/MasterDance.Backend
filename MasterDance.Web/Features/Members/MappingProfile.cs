@@ -1,5 +1,6 @@
 using AutoMapper;
 using MasterDance.Web.Data;
+using MasterDance.Web.Features.Members.Queries;
 
 namespace MasterDance.Web.Features.Members
 {
@@ -7,8 +8,9 @@ namespace MasterDance.Web.Features.Members
     {
         public MappingProfile()
         {
-            CreateMap<Member, Features.Members.GetMembers.Model>();
-            CreateMap<Member, Features.Members.GetMemberById.Model>();
+            CreateMap<Member, GetMembers.Model>();
+            CreateMap<Member, GetMemberById.Model>();
+            CreateMap<Document, GetDocumentsForMember.Model>();
         }
     }
 }

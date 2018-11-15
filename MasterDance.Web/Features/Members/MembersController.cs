@@ -1,6 +1,9 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using MasterDance.Web.Features.Members.Commands;
+using MasterDance.Web.Features.Members.Queries;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MasterDance.Web.Features.Members
@@ -37,6 +40,18 @@ namespace MasterDance.Web.Features.Members
             }
 
             return Ok(await _mediator.Send(command));
+        }
+
+        [HttpGet("{memberId}/documents")]
+        public async Task<ActionResult<IList<GetDocumentsForMember.Model>>> GetDocumentsForMember([FromRoute] GetDocumentsForMember.Query query)
+        {
+            return Ok(await _mediator.Send(query));
+        }
+
+        [HttpPost("{memberId}/documents")]
+        public async Task<ActionResult<int>> AddDocument([FromForm] AddDocument.Command command)
+        {
+            return await _mediator.Send(command);
         }
     }
 }

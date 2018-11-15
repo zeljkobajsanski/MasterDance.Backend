@@ -1,3 +1,5 @@
+using System;
+
 namespace MasterDance.Web.Data
 {
     public class Document : IEntity
@@ -7,5 +9,7 @@ namespace MasterDance.Web.Data
         public int MemberId { get; set; }
         public DocumentType Type { get; set; }
         public int TypeId { get; set; }
+        public DateTime? Date { get; set; }
+        public Blob Content { get; set; }
     }
 }

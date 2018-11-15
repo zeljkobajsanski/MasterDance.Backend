@@ -5,7 +5,7 @@ using FluentValidation;
 using MasterDance.Web.Data;
 using MediatR;
 
-namespace MasterDance.Web.Features.Members
+namespace MasterDance.Web.Features.Members.Commands
 {
     public class SaveMember
     {
