@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -42,7 +43,7 @@ namespace MasterDance.IntegrationTests
             var response = await client.GetAsync("/api/Members/1");
 
             Assert.True(response.StatusCode == HttpStatusCode.OK);
-            var result = await response.Content.ReadAsAsync<GetMemberById.Model>();
+            var result = await response.Content.ReadAsAsync<GetMemberById.Dto>();
             Assert.NotNull(result);
             Assert.Equal("Jovana", result.FirstName);
             Assert.Equal("Bajsanski", result.LastName);
@@ -52,10 +53,17 @@ namespace MasterDance.IntegrationTests
         {
             // Arrange
             var client = Factory.CreateClient();
-            var request = new SaveMember.Command()
+            var request = new SaveMember.Dto()
             {
-                FirstName = "Masa",
-                LastName = "Plavsic"
+                FirstName = "Jovana",
+                LastName = "Bajsanski",
+                Image = "jovana.jpg",
+                ContactAddress = "Preradoviceva 36/17",
+                DateOfBirth = new DateTime(2010, 11, 25),
+                FatherFirstName = "Zeljko",
+                FatherContactPhone = "+381 63 528065",
+                MotherFirstName = "Ivana",
+                MotherContactPhone = "+381 63 518 885",
             };
             
             // Act
@@ -69,7 +77,7 @@ namespace MasterDance.IntegrationTests
         {
             // Arrange
             var client = Factory.CreateClient();
-            var request = new SaveMember.Command()
+            var request = new SaveMember.Dto()
             {
                 Id = 1,
                 FirstName = "Jovana Joca",

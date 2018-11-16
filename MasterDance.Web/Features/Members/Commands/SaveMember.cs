@@ -1,3 +1,4 @@
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -10,24 +11,37 @@ namespace MasterDance.Web.Features.Members.Commands
 {
     public class SaveMember
     {
-        public class Command : IRequest<int>
+        public class Dto : IRequest<int>
         {
             public int Id { get; set; }
             public string FirstName { get; set; }
             public string LastName { get; set; }
+            public int Gender { get; set; }
+            public DateTime? DateOfBirth { get; set; }
+            public DateTime? JoinedDate { get; set; }
             public string Image { get; set; }
+            public string ContactAddress { get; set; }
+            public string ContactPhone { get; set; }
+            public int? FatherId { get; set; }
+            public int? MotherId { get; set; }
+            public string FatherFirstName { get; set; }
+            public string FatherContactPhone { get; set; }
+            public string MotherFirstName { get; set; }
+            public string MotherContactPhone { get; set; }
         }
 
-        public class CommandValidator : AbstractValidator<Command>
+        public class DtoValidator : AbstractValidator<Dto>
         {
-            public CommandValidator()
+            public DtoValidator()
             {
                 RuleFor(x => x.FirstName).NotEmpty();
                 RuleFor(x => x.LastName).NotEmpty();
+                RuleFor(x => x.DateOfBirth).NotEmpty();
+                RuleFor(x => x.Gender).GreaterThan(0);
             }
         }
         
-        public class CommandHandler : IRequestHandler<Command, int>
+        public class CommandHandler : IRequestHandler<Dto, int>
         {
             private readonly MasterDanceContext _context;
             private readonly IMapper _mapper;
@@ -38,7 +52,7 @@ namespace MasterDance.Web.Features.Members.Commands
                 _mapper = mapper;
             }
 
-            public async Task<int> Handle(Command request, CancellationToken cancellationToken)
+            public async Task<int> Handle(Dto request, CancellationToken cancellationToken)
             {
                 var member = _mapper.Map<Member>(request);
                 _context.Members.Upsert(member);

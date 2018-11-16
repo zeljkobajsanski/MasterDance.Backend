@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using MasterDance.Web.Data;
+using MasterDance.Web.Features.Members.Commands;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -10,20 +11,17 @@ namespace MasterDance.Web.Features.Members.Queries
 {
     public class GetMemberById
     {
-        public class Query : IRequest<Model>
+        public class Request : IRequest<Dto>
         {
             public int Id { get; set; }
         }
 
-        public class Model
+        public class Dto : SaveMember.Dto
         {
-            public int Id { get; set; }
-            public string FirstName { get; set; }
-            public string LastName { get; set; }
-            public string Image { get; set; }
+           
         }
         
-        public class QueryHandler : IRequestHandler<Query, Model>
+        public class QueryHandler : IRequestHandler<Request, Dto>
         {
             private readonly MasterDanceContext _context;
             private readonly IMapper _mapper;
@@ -34,9 +32,9 @@ namespace MasterDance.Web.Features.Members.Queries
                 _mapper = mapper;
             }
 
-            public Task<Model> Handle(Query request, CancellationToken cancellationToken)
+            public Task<Dto> Handle(Request request, CancellationToken cancellationToken)
             {
-                return _context.Members.ProjectTo<Model>(_mapper.ConfigurationProvider)
+                return _context.Members.ProjectTo<Dto>(_mapper.ConfigurationProvider)
                                        .SingleOrDefaultAsync(x => x.Id == request.Id, cancellationToken);
             }
         }

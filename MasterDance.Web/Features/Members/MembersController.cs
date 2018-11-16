@@ -26,20 +26,20 @@ namespace MasterDance.Web.Features.Members
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<GetMemberById.Model>> GetMember([FromRoute]GetMemberById.Query query)
+        public async Task<ActionResult<GetMemberById.Dto>> GetMember([FromRoute]GetMemberById.Request request)
         {
-            return Ok(await _mediator.Send(query));
+            return Ok(await _mediator.Send(request));
         }
 
         [HttpPost]
-        public async Task<ActionResult<int>> Save([FromBody] SaveMember.Command command)
+        public async Task<ActionResult<int>> Save([FromBody] SaveMember.Dto dto)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest();
             }
 
-            return Ok(await _mediator.Send(command));
+            return Ok(await _mediator.Send(dto));
         }
 
         [HttpGet("{memberId}/documents")]

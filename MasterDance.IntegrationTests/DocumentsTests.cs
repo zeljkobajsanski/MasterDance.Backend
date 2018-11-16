@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Net.Http;
 using MasterDance.Web.Features.Documents.Queries;
-using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using Xunit;
 
 namespace MasterDance.IntegrationTests
