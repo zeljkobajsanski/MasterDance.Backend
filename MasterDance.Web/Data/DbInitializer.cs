@@ -14,14 +14,6 @@ namespace MasterDance.Web.Data
                 context.DocumentTypes.Add(new DocumentType() {Name = "Lekarski pregled"});
                 context.SaveChanges();
             }
-
-            if (!context.Members.Any())
-            {
-                var jovana = new Member() { FirstName = "Jovana", LastName = "Bajsanski" };
-                context.Members.Add(jovana);
-                context.SaveChanges(); ;
-            }
-
         }
     }
 }

@@ -44,7 +44,7 @@ namespace MasterDance.Web.Features.Members.Commands
                 request.Date = DateTime.Now;
                 var document = new Document
                 {
-                    Date = DateTime.Now,
+                    ExpirationDate = request.Date,
                     MemberId = request.MemberId,
                     TypeId = request.DocumentTypeId
                 };

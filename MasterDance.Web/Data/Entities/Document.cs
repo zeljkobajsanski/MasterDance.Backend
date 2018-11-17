@@ -9,7 +9,7 @@ namespace MasterDance.Web.Data.Entities
         public int MemberId { get; set; }
         public DocumentType Type { get; set; }
         public int TypeId { get; set; }
-        public DateTime? Date { get; set; }
+        public DateTime? ExpirationDate { get; set; }
         public Blob Content { get; set; }
     }
 }
