@@ -17,7 +17,7 @@ namespace MasterDance.Web.Features.Members.Queries
         {
             public int Id { get; set; }
             public string TypeName { get; set; }
-            public DateTime? Date { get; set; }
+            public DateTime? ExpirationDate { get; set; }
         }
 
         public class Query : IRequest<IList<Model>>

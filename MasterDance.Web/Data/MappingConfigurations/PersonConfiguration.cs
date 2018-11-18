@@ -8,9 +8,12 @@ namespace MasterDance.Web.Data.MappingConfigurations
     {
         public void Configure(EntityTypeBuilder<Person> builder)
         {
+            builder.ToTable("Persons");
             builder.Property(x => x.FirstName).HasMaxLength(128).IsRequired();
-            builder.Property(x => x.LastName).HasMaxLength(128).IsRequired();
-            builder.HasDiscriminator<string>("MemberType").HasValue<Person>("Person").HasValue<Member>("Member");
+            builder.Property(x => x.LastName).HasMaxLength(128);
+            builder.HasDiscriminator<string>("MemberType")
+                   .HasValue<Person>("Person")
+                   .HasValue<Member>("Member");
         }
     }
 }

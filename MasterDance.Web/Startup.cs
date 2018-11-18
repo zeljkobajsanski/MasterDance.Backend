@@ -20,17 +20,21 @@ namespace MasterDance.Web
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration, ILogger<Startup> logger)
         {
             Configuration = configuration;
+            Logger = logger;
         }
 
         public IConfiguration Configuration { get; }
+        public ILogger Logger { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            Logger.LogDebug("Configuring services");
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
+                .AddJsonOptions(opts => { opts.SerializerSettings.DateFormatString = "dd.MM.yyyy"; })
                     .AddFluentValidation(cfg => cfg.RegisterValidatorsFromAssemblyContaining<Startup>());
             services.AddAutoMapper();
             services.AddMediatR();

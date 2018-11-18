@@ -41,7 +41,6 @@ namespace MasterDance.Web.Features.Members.Commands
 
             public async Task<int> Handle(Command request, CancellationToken cancellationToken)
             {
-                request.Date = DateTime.Now;
                 var document = new Document
                 {
                     ExpirationDate = request.Date,

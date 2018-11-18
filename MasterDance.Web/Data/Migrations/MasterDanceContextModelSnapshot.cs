@@ -3,7 +3,6 @@ using System;
 using MasterDance.Web.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace MasterDance.Web.Data.Migrations
@@ -15,15 +14,12 @@ namespace MasterDance.Web.Data.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.1.4-rtm-31024")
-                .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                .HasAnnotation("ProductVersion", "2.1.4-rtm-31024");
 
             modelBuilder.Entity("MasterDance.Web.Data.Entities.Document", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .ValueGeneratedOnAdd();
 
                     b.Property<DateTime?>("ExpirationDate");
 
@@ -43,8 +39,7 @@ namespace MasterDance.Web.Data.Migrations
             modelBuilder.Entity("MasterDance.Web.Data.Entities.DocumentType", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .ValueGeneratedOnAdd();
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -58,8 +53,7 @@ namespace MasterDance.Web.Data.Migrations
             modelBuilder.Entity("MasterDance.Web.Data.Entities.Image", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .ValueGeneratedOnAdd();
 
                     b.Property<int>("MemberId");
 
@@ -73,8 +67,7 @@ namespace MasterDance.Web.Data.Migrations
             modelBuilder.Entity("MasterDance.Web.Data.Entities.Person", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .ValueGeneratedOnAdd();
 
                     b.Property<string>("FirstName")
                         .IsRequired()
@@ -83,7 +76,6 @@ namespace MasterDance.Web.Data.Migrations
                     b.Property<int>("Gender");
 
                     b.Property<string>("LastName")
-                        .IsRequired()
                         .HasMaxLength(128);
 
                     b.Property<string>("MemberType")
@@ -91,7 +83,7 @@ namespace MasterDance.Web.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Person");
+                    b.ToTable("Persons");
 
                     b.HasDiscriminator<string>("MemberType").HasValue("Person");
                 });
@@ -133,9 +125,7 @@ namespace MasterDance.Web.Data.Migrations
 
                     b.OwnsOne("MasterDance.Web.Data.Entities.Blob", "Content", b1 =>
                         {
-                            b1.Property<int>("DocumentId")
-                                .ValueGeneratedOnAdd()
-                                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                            b1.Property<int>("DocumentId");
 
                             b1.Property<string>("Content")
                                 .IsRequired();
@@ -167,9 +157,7 @@ namespace MasterDance.Web.Data.Migrations
                 {
                     b.OwnsOne("MasterDance.Web.Data.Entities.Contact", "Contact", b1 =>
                         {
-                            b1.Property<int>("PersonId")
-                                .ValueGeneratedOnAdd()
-                                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                            b1.Property<int>("PersonId");
 
                             b1.Property<string>("Address")
                                 .HasMaxLength(255);
@@ -180,7 +168,7 @@ namespace MasterDance.Web.Data.Migrations
                             b1.Property<string>("Phone")
                                 .HasMaxLength(255);
 
-                            b1.ToTable("Person");
+                            b1.ToTable("Persons");
 
                             b1.HasOne("MasterDance.Web.Data.Entities.Person")
                                 .WithOne("Contact")
