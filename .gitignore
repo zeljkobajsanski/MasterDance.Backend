@@ -1,0 +1,7 @@
+/.vs
+/MasterDance.IntegrationTests/obj
+/MasterDance.IntegrationTests/bin
+/MasterDance.UnitTests/obj
+/MasterDance.UnitTests/bin
+/MasterDance.Web/obj
+/MasterDance.Web/bin

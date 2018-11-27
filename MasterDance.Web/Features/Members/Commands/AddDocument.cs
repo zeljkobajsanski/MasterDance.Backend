@@ -47,22 +47,31 @@ namespace MasterDance.Web.Features.Members.Commands
                     MemberId = request.MemberId,
                     TypeId = request.DocumentTypeId
                 };
-                using (var ms = new MemoryStream())
+
+                var targetFolder = $"Documents/{request.MemberId}";
+                var targetFolderWithBase = $"wwwroot/{targetFolder}";
+                if (!Directory.Exists(targetFolderWithBase))
+                {
+                    Directory.CreateDirectory(targetFolderWithBase);
+                }
+
+                var filePath = $"{targetFolderWithBase}/{request.File.FileName}";
+                using (var ms = File.Create(filePath))
                 {
                     await request.File.CopyToAsync(ms, cancellationToken);
-                    ms.Seek(0, SeekOrigin.Begin);
-                    var content = Convert.ToBase64String(ms.GetBuffer());
+
                     string contentType = null;
                     try
                     {
                         contentType = request.File.ContentType;
-                    } catch { }
+                    }
+                    catch { }
 
                     document.Content = new Blob()
                     {
+                        Content = $"{targetFolder}/{request.File.FileName}",
                         FileName = request.File.FileName,
                         ContentType = contentType,
-                        Content = content
                     };
                 }
                 _context.Documents.Add(document);

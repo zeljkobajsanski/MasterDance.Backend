@@ -62,6 +62,7 @@ namespace MasterDance.Web
 
             // app.UseHttpsRedirection();
             app.UseMvc();
+            app.UseFileServer();
         }
     }
 }
