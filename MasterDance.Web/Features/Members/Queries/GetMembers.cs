@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -35,7 +36,8 @@ namespace MasterDance.Web.Features.Members.Queries
 
             public Task<List<Model>> Handle(Query request, CancellationToken cancellationToken)
             {
-                return _context.Members.ProjectTo<Model>(_mapper.ConfigurationProvider).ToListAsync(cancellationToken);
+                return _context.Members.Where(x => x.IsActive).ProjectTo<Model>(_mapper.ConfigurationProvider)
+                    .ToListAsync(cancellationToken);
             }
         }
     }

@@ -39,13 +39,13 @@ namespace MasterDance.Web
             services.AddAutoMapper();
             services.AddMediatR();
             //services.AddDbContext<MasterDanceContext>(cfg => cfg.UseInMemoryDatabase("MasterDance"));
-            //services.AddDbContext<MasterDanceContext>(cfg =>
-            //    {
-            //        cfg.UseSqlServer(Configuration.GetConnectionString("MasterDance"));
-            //        cfg.EnableSensitiveDataLogging(true);
-            //    }
-            //);
-            services.AddDbContext<MasterDanceContext>(cfg => cfg.UseSqlite("Filename=MasterDance.db"));
+            services.AddDbContext<MasterDanceContext>(cfg =>
+                {
+                    cfg.UseSqlServer(Configuration.GetConnectionString("MasterDance"));
+                    cfg.EnableSensitiveDataLogging(true);
+                }
+            );
+            //services.AddDbContext<MasterDanceContext>(cfg => cfg.UseSqlite("Filename=MasterDance.db"));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

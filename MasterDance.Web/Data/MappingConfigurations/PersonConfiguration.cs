@@ -11,9 +11,12 @@ namespace MasterDance.Web.Data.MappingConfigurations
             builder.ToTable("Persons");
             builder.Property(x => x.FirstName).HasMaxLength(128).IsRequired();
             builder.Property(x => x.LastName).HasMaxLength(128);
+            builder.OwnsOne(x => x.Contact);
             builder.HasDiscriminator<string>("MemberType")
                    .HasValue<Person>("Person")
                    .HasValue<Member>("Member");
+            
+            builder.Property(x => x.Id).ValueGeneratedOnAdd();
         }
     }
 }

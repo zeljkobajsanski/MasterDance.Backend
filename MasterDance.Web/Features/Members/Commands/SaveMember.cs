@@ -29,6 +29,7 @@ namespace MasterDance.Web.Features.Members.Commands
             public string FatherContactPhone { get; set; }
             public string MotherFirstName { get; set; }
             public string MotherContactPhone { get; set; }
+            public bool IsActive { get; set; }
         }
 
         public class DtoValidator : AbstractValidator<Dto>

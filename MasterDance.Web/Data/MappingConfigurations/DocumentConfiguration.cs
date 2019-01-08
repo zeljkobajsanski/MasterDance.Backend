@@ -8,6 +8,8 @@ namespace MasterDance.Web.Data.MappingConfigurations
     {
         public void Configure(EntityTypeBuilder<Document> builder)
         {
+            builder.Property(x => x.Id).ValueGeneratedOnAdd();
+            builder.OwnsOne(x => x.Content);
         }
     }
 }

@@ -3,6 +3,7 @@ using System;
 using MasterDance.Web.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace MasterDance.Web.Data.Migrations
@@ -14,12 +15,35 @@ namespace MasterDance.Web.Data.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.1.4-rtm-31024");
+                .HasAnnotation("ProductVersion", "2.2.0-rtm-35687")
+                .HasAnnotation("Relational:MaxIdentifierLength", 128)
+                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+            modelBuilder.Entity("MasterDance.Web.Data.Entities.Competition", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("City")
+                        .HasMaxLength(255);
+
+                    b.Property<DateTime?>("Date");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(255);
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Competitions");
+                });
 
             modelBuilder.Entity("MasterDance.Web.Data.Entities.Document", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<DateTime?>("ExpirationDate");
 
@@ -39,7 +63,8 @@ namespace MasterDance.Web.Data.Migrations
             modelBuilder.Entity("MasterDance.Web.Data.Entities.DocumentType", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -53,7 +78,8 @@ namespace MasterDance.Web.Data.Migrations
             modelBuilder.Entity("MasterDance.Web.Data.Entities.Image", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<int>("MemberId");
 
@@ -64,10 +90,51 @@ namespace MasterDance.Web.Data.Migrations
                     b.ToTable("Image");
                 });
 
+            modelBuilder.Entity("MasterDance.Web.Data.Entities.Membership", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<decimal>("Amount");
+
+                    b.Property<DateTime>("Date");
+
+                    b.Property<int>("MemberId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MemberId");
+
+                    b.ToTable("Memberships");
+                });
+
+            modelBuilder.Entity("MasterDance.Web.Data.Entities.Payment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("money");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime");
+
+                    b.Property<int>("MembershipId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MembershipId");
+
+                    b.ToTable("Payments");
+                });
+
             modelBuilder.Entity("MasterDance.Web.Data.Entities.Person", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("FirstName")
                         .IsRequired()
@@ -88,6 +155,43 @@ namespace MasterDance.Web.Data.Migrations
                     b.HasDiscriminator<string>("MemberType").HasValue("Person");
                 });
 
+            modelBuilder.Entity("MasterDance.Web.Data.Entities.Prize", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("CompetitionId");
+
+                    b.Property<int>("MemberId");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(255);
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CompetitionId");
+
+                    b.HasIndex("MemberId");
+
+                    b.ToTable("Prizes");
+                });
+
+            modelBuilder.Entity("MasterDance.Web.Data.Entities.Settings", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<decimal>("MembershipAmount")
+                        .HasColumnType("money");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Settings");
+                });
+
             modelBuilder.Entity("MasterDance.Web.Data.Entities.Member", b =>
                 {
                     b.HasBaseType("MasterDance.Web.Data.Entities.Person");
@@ -98,6 +202,8 @@ namespace MasterDance.Web.Data.Migrations
 
                     b.Property<string>("Image");
 
+                    b.Property<bool>("IsActive");
+
                     b.Property<DateTime?>("JoinedDate");
 
                     b.Property<int?>("MotherId");
@@ -105,8 +211,6 @@ namespace MasterDance.Web.Data.Migrations
                     b.HasIndex("FatherId");
 
                     b.HasIndex("MotherId");
-
-                    b.ToTable("Member");
 
                     b.HasDiscriminator().HasValue("Member");
                 });
@@ -125,7 +229,9 @@ namespace MasterDance.Web.Data.Migrations
 
                     b.OwnsOne("MasterDance.Web.Data.Entities.Blob", "Content", b1 =>
                         {
-                            b1.Property<int>("DocumentId");
+                            b1.Property<int>("DocumentId")
+                                .ValueGeneratedOnAdd()
+                                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                             b1.Property<string>("Content")
                                 .IsRequired();
@@ -135,6 +241,8 @@ namespace MasterDance.Web.Data.Migrations
 
                             b1.Property<string>("FileName")
                                 .HasMaxLength(255);
+
+                            b1.HasKey("DocumentId");
 
                             b1.ToTable("Documents");
 
@@ -153,11 +261,29 @@ namespace MasterDance.Web.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
+            modelBuilder.Entity("MasterDance.Web.Data.Entities.Membership", b =>
+                {
+                    b.HasOne("MasterDance.Web.Data.Entities.Member", "Member")
+                        .WithMany()
+                        .HasForeignKey("MemberId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("MasterDance.Web.Data.Entities.Payment", b =>
+                {
+                    b.HasOne("MasterDance.Web.Data.Entities.Membership", "Membership")
+                        .WithMany("Payments")
+                        .HasForeignKey("MembershipId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
             modelBuilder.Entity("MasterDance.Web.Data.Entities.Person", b =>
                 {
                     b.OwnsOne("MasterDance.Web.Data.Entities.Contact", "Contact", b1 =>
                         {
-                            b1.Property<int>("PersonId");
+                            b1.Property<int>("PersonId")
+                                .ValueGeneratedOnAdd()
+                                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                             b1.Property<string>("Address")
                                 .HasMaxLength(255);
@@ -168,6 +294,8 @@ namespace MasterDance.Web.Data.Migrations
                             b1.Property<string>("Phone")
                                 .HasMaxLength(255);
 
+                            b1.HasKey("PersonId");
+
                             b1.ToTable("Persons");
 
                             b1.HasOne("MasterDance.Web.Data.Entities.Person")
@@ -175,6 +303,19 @@ namespace MasterDance.Web.Data.Migrations
                                 .HasForeignKey("MasterDance.Web.Data.Entities.Contact", "PersonId")
                                 .OnDelete(DeleteBehavior.Cascade);
                         });
+                });
+
+            modelBuilder.Entity("MasterDance.Web.Data.Entities.Prize", b =>
+                {
+                    b.HasOne("MasterDance.Web.Data.Entities.Competition", "Competition")
+                        .WithMany()
+                        .HasForeignKey("CompetitionId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("MasterDance.Web.Data.Entities.Member", "Member")
+                        .WithMany("Prizes")
+                        .HasForeignKey("MemberId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("MasterDance.Web.Data.Entities.Member", b =>

@@ -14,6 +14,12 @@ namespace MasterDance.Web.Data
                 context.DocumentTypes.Add(new DocumentType() {Name = "Lekarski pregled"});
                 context.SaveChanges();
             }
+
+            if (!context.Settings.Any())
+            {
+                context.Settings.Add(new Settings() {MembershipAmount = 2500});
+                context.SaveChanges();
+            }
         }
     }
 }

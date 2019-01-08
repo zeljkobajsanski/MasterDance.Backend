@@ -9,6 +9,7 @@ namespace MasterDance.Web.Data.Entities
         {
             Images = new HashSet<Image>();
             Documents = new HashSet<Document>();
+            Prizes = new List<Prize>();
         }
 
         public string Image { get; set; }
@@ -20,5 +21,7 @@ namespace MasterDance.Web.Data.Entities
         public Person Father { get; set; }
         public int? MotherId { get; set; }
         public Person Mother { get; set; }
+        public ICollection<Prize> Prizes { get; private set; }
+        public bool IsActive { get; set; }
     }
 }
