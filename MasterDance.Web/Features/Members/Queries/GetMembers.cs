@@ -21,6 +21,7 @@ namespace MasterDance.Web.Features.Members.Queries
             public string FirstName { get; set; }
             public string LastName { get; set; }
             public string Image { get; set; }
+            public string MemberGroupId { get; set; }
         }
         
         public class QueryHandler : IRequestHandler<Query, List<Model>>

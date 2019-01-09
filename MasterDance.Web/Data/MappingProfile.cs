@@ -15,6 +15,8 @@ namespace MasterDance.Web.Data
                 .ForMember(x => x.Id, opt => opt.Ignore());
             CreateMap<Membership, MembershipDto>()
                 .ForMember(x => x.PaidAmount, opt => opt.MapFrom(x => x.Payments.Sum(p => p.Amount)));
+            CreateMap<MemberGroupDto, MemberGroup>()
+                .ForMember(x => x.Id, opt => opt.Ignore());
         }
     }
 }

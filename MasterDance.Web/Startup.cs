@@ -7,7 +7,9 @@ using FluentValidation.AspNetCore;
 using MasterDance.Web.Data;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -60,6 +62,22 @@ namespace MasterDance.Web
                 app.UseHsts();
             }
 
+            app.UseExceptionHandler(builder => builder.Run(async (c) =>
+            {
+                c.Response.StatusCode = 500;
+                c.Response.ContentType = "application/json";
+                var contextFeature = c.Features.Get<IExceptionHandlerFeature>();
+                if(contextFeature != null)
+                { 
+                    Logger.LogError($"Something went wrong: {contextFeature.Error}");
+ 
+                    await c.Response.WriteAsync(new
+                    {
+                        c.Response.StatusCode,
+                        Message = "Internal Server Error."
+                    }.ToString());
+                }
+            }));
             // app.UseHttpsRedirection();
             app.UseMvc();
             app.UseFileServer();

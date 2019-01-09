@@ -14,7 +14,8 @@ namespace MasterDance.Web.Data.MappingConfigurations
             builder.OwnsOne(x => x.Contact);
             builder.HasDiscriminator<string>("MemberType")
                    .HasValue<Person>("Person")
-                   .HasValue<Member>("Member");
+                   .HasValue<Member>("Member")
+                   .HasValue<Coach>("Coach");
             
             builder.Property(x => x.Id).ValueGeneratedOnAdd();
         }

@@ -4,14 +4,16 @@ using MasterDance.Web.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace MasterDance.Web.Data.Migrations
 {
     [DbContext(typeof(MasterDanceContext))]
-    partial class MasterDanceContextModelSnapshot : ModelSnapshot
+    [Migration("20190108114945_Initial")]
+    partial class Initial
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -88,21 +90,6 @@ namespace MasterDance.Web.Data.Migrations
                     b.HasIndex("MemberId");
 
                     b.ToTable("Image");
-                });
-
-            modelBuilder.Entity("MasterDance.Web.Data.Entities.MemberGroup", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(255);
-
-                    b.HasKey("Id");
-
-                    b.ToTable("MemberGroups");
                 });
 
             modelBuilder.Entity("MasterDance.Web.Data.Entities.Membership", b =>
@@ -207,13 +194,6 @@ namespace MasterDance.Web.Data.Migrations
                     b.ToTable("Settings");
                 });
 
-            modelBuilder.Entity("MasterDance.Web.Data.Entities.Coach", b =>
-                {
-                    b.HasBaseType("MasterDance.Web.Data.Entities.Person");
-
-                    b.HasDiscriminator().HasValue("Coach");
-                });
-
             modelBuilder.Entity("MasterDance.Web.Data.Entities.Member", b =>
                 {
                     b.HasBaseType("MasterDance.Web.Data.Entities.Person");
@@ -228,13 +208,9 @@ namespace MasterDance.Web.Data.Migrations
 
                     b.Property<DateTime?>("JoinedDate");
 
-                    b.Property<int?>("MemberGroupId");
-
                     b.Property<int?>("MotherId");
 
                     b.HasIndex("FatherId");
-
-                    b.HasIndex("MemberGroupId");
 
                     b.HasIndex("MotherId");
 
@@ -349,10 +325,6 @@ namespace MasterDance.Web.Data.Migrations
                     b.HasOne("MasterDance.Web.Data.Entities.Person", "Father")
                         .WithMany()
                         .HasForeignKey("FatherId");
-
-                    b.HasOne("MasterDance.Web.Data.Entities.MemberGroup", "MemberGroup")
-                        .WithMany("Members")
-                        .HasForeignKey("MemberGroupId");
 
                     b.HasOne("MasterDance.Web.Data.Entities.Person", "Mother")
                         .WithMany()

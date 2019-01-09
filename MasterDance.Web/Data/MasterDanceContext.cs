@@ -19,6 +19,8 @@ namespace MasterDance.Web.Data
         public DbSet<Membership> Memberships { get; set; }
         public DbSet<Payment> Payments { get; set; }
         public DbSet<Settings> Settings { get; set; }
+        public DbSet<MemberGroup> MemberGroups { get; set; }
+        public DbSet<Coach> Coaches { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

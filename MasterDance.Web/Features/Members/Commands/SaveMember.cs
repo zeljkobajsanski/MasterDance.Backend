@@ -30,6 +30,7 @@ namespace MasterDance.Web.Features.Members.Commands
             public string MotherFirstName { get; set; }
             public string MotherContactPhone { get; set; }
             public bool IsActive { get; set; }
+            public int? MemberGroupId { get; set; }
         }
 
         public class DtoValidator : AbstractValidator<Dto>

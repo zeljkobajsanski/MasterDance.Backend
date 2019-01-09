@@ -4,14 +4,16 @@ using MasterDance.Web.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace MasterDance.Web.Data.Migrations
 {
     [DbContext(typeof(MasterDanceContext))]
-    partial class MasterDanceContextModelSnapshot : ModelSnapshot
+    [Migration("20190109091029_MemberGroupsAndCoaches")]
+    partial class MemberGroupsAndCoaches
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

@@ -23,5 +23,7 @@ namespace MasterDance.Web.Data.Entities
         public Person Mother { get; set; }
         public ICollection<Prize> Prizes { get; private set; }
         public bool IsActive { get; set; }
+        public MemberGroup MemberGroup { get; set; }
+        public int? MemberGroupId { get; set; }
     }
 }
