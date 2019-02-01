@@ -1,4 +1,5 @@
-﻿using MasterDance.Common;
+﻿using MasterDance.Application.Interfaces;
+using MasterDance.Common;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace MasterDance.Infrastructure.Extensions
@@ -8,6 +9,7 @@ namespace MasterDance.Infrastructure.Extensions
         public static IServiceCollection AddInfrastructureModule(this IServiceCollection serviceCollection)
         {
             serviceCollection.AddTransient<IDateTime, MachineDateTime>();
+            serviceCollection.AddTransient<IImageService, ImageService>();
             return serviceCollection;
         }
     }

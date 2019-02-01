@@ -6,6 +6,354 @@
 //----------------------
 // ReSharper disable InconsistentNaming
 
+export class CompetitionsProxy {
+    private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
+        this.http = http ? http : <any>window;
+        this.baseUrl = baseUrl ? baseUrl : "";
+    }
+
+    getCompetitions(): Promise<CompetitionModel[] | null> {
+        let url_ = this.baseUrl + "/api/Competitions";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ = <RequestInit>{
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetCompetitions(_response);
+        });
+    }
+
+    protected processGetCompetitions(response: Response): Promise<CompetitionModel[] | null> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (resultData200 && resultData200.constructor === Array) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(CompetitionModel.fromJS(item));
+            }
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<CompetitionModel[] | null>(<any>null);
+    }
+
+    saveCompetition(competition: CompetitionModel | null): Promise<number> {
+        let url_ = this.baseUrl + "/api/Competitions";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(competition);
+
+        let options_ = <RequestInit>{
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json", 
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processSaveCompetition(_response);
+        });
+    }
+
+    protected processSaveCompetition(response: Response): Promise<number> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 !== undefined ? resultData200 : <any>null;
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<number>(<any>null);
+    }
+
+    deleteCompetition(id: number): Promise<CompetitionModel[] | null> {
+        let url_ = this.baseUrl + "/api/Competitions/{id}";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id)); 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ = <RequestInit>{
+            method: "DELETE",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processDeleteCompetition(_response);
+        });
+    }
+
+    protected processDeleteCompetition(response: Response): Promise<CompetitionModel[] | null> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (resultData200 && resultData200.constructor === Array) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(CompetitionModel.fromJS(item));
+            }
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<CompetitionModel[] | null>(<any>null);
+    }
+}
+
+export class DocumentsProxy {
+    private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
+        this.http = http ? http : <any>window;
+        this.baseUrl = baseUrl ? baseUrl : "";
+    }
+
+    getDocument(id: number): Promise<DocumentModel | null> {
+        let url_ = this.baseUrl + "/api/Documents?";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined and cannot be null.");
+        else
+            url_ += "id=" + encodeURIComponent("" + id) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ = <RequestInit>{
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetDocument(_response);
+        });
+    }
+
+    protected processGetDocument(response: Response): Promise<DocumentModel | null> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? DocumentModel.fromJS(resultData200) : <any>null;
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<DocumentModel | null>(<any>null);
+    }
+}
+
+export class DocumentTypesProxy {
+    private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
+        this.http = http ? http : <any>window;
+        this.baseUrl = baseUrl ? baseUrl : "";
+    }
+
+    getDocumentTypes(): Promise<FileResponse | null> {
+        let url_ = this.baseUrl + "/api/DocumentTypes";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ = <RequestInit>{
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetDocumentTypes(_response);
+        });
+    }
+
+    protected processGetDocumentTypes(response: Response): Promise<FileResponse | null> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200 || status === 206) {
+            const contentDisposition = response.headers ? response.headers.get("content-disposition") : undefined;
+            const fileNameMatch = contentDisposition ? /filename="?([^"]*?)"?(;|$)/g.exec(contentDisposition) : undefined;
+            const fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[1] : undefined;
+            return response.blob().then(blob => { return { fileName: fileName, data: blob, status: status, headers: _headers }; });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<FileResponse | null>(<any>null);
+    }
+}
+
+export class MemberGroupsProxy {
+    private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
+        this.http = http ? http : <any>window;
+        this.baseUrl = baseUrl ? baseUrl : "";
+    }
+
+    getMemberGroups(): Promise<MemberGroupModel[] | null> {
+        let url_ = this.baseUrl + "/api/MemberGroups";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ = <RequestInit>{
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetMemberGroups(_response);
+        });
+    }
+
+    protected processGetMemberGroups(response: Response): Promise<MemberGroupModel[] | null> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (resultData200 && resultData200.constructor === Array) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(MemberGroupModel.fromJS(item));
+            }
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<MemberGroupModel[] | null>(<any>null);
+    }
+
+    saveMemberGroup(model: MemberGroupModel | null): Promise<MemberGroupModel | null> {
+        let url_ = this.baseUrl + "/api/MemberGroups";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(model);
+
+        let options_ = <RequestInit>{
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json", 
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processSaveMemberGroup(_response);
+        });
+    }
+
+    protected processSaveMemberGroup(response: Response): Promise<MemberGroupModel | null> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? MemberGroupModel.fromJS(resultData200) : <any>null;
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<MemberGroupModel | null>(<any>null);
+    }
+
+    deleteMemberGroupById(id: number): Promise<MemberGroupModel[] | null> {
+        let url_ = this.baseUrl + "/api/MemberGroups/{id}";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id)); 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ = <RequestInit>{
+            method: "DELETE",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processDeleteMemberGroupById(_response);
+        });
+    }
+
+    protected processDeleteMemberGroupById(response: Response): Promise<MemberGroupModel[] | null> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (resultData200 && resultData200.constructor === Array) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(MemberGroupModel.fromJS(item));
+            }
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<MemberGroupModel[] | null>(<any>null);
+    }
+}
+
 export class MembersProxy {
     private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
     private baseUrl: string;
@@ -88,6 +436,273 @@ export class MembersProxy {
         }
         return Promise.resolve<MemberDetailsModel | null>(<any>null);
     }
+
+    uploadDocument(memberId: number, document: DocumentForUpload | null | undefined): Promise<number> {
+        let url_ = this.baseUrl + "/api/Members/{memberId}/documents";
+        if (memberId === undefined || memberId === null)
+            throw new Error("The parameter 'memberId' must be defined.");
+        url_ = url_.replace("{memberId}", encodeURIComponent("" + memberId)); 
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = new FormData();
+        if (document !== null && document !== undefined)
+            content_.append("document", document.toString());
+
+        let options_ = <RequestInit>{
+            body: content_,
+            method: "POST",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processUploadDocument(_response);
+        });
+    }
+
+    protected processUploadDocument(response: Response): Promise<number> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 !== undefined ? resultData200 : <any>null;
+            return result200;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("A server error occurred.", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<number>(<any>null);
+    }
+
+    deleteDocument(memberId: number, documentId: number): Promise<DocumentModel2[] | null> {
+        let url_ = this.baseUrl + "/api/Members/{memberId}/documents/{documentId}";
+        if (memberId === undefined || memberId === null)
+            throw new Error("The parameter 'memberId' must be defined.");
+        url_ = url_.replace("{memberId}", encodeURIComponent("" + memberId)); 
+        if (documentId === undefined || documentId === null)
+            throw new Error("The parameter 'documentId' must be defined.");
+        url_ = url_.replace("{documentId}", encodeURIComponent("" + documentId)); 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ = <RequestInit>{
+            method: "DELETE",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processDeleteDocument(_response);
+        });
+    }
+
+    protected processDeleteDocument(response: Response): Promise<DocumentModel2[] | null> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (resultData200 && resultData200.constructor === Array) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(DocumentModel2.fromJS(item));
+            }
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<DocumentModel2[] | null>(<any>null);
+    }
+}
+
+export class MembershipsProxy {
+    private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
+        this.http = http ? http : <any>window;
+        this.baseUrl = baseUrl ? baseUrl : "";
+    }
+
+    calculateMemberships(): Promise<boolean> {
+        let url_ = this.baseUrl + "/api/Memberships/CalculateMemberships";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ = <RequestInit>{
+            method: "POST",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processCalculateMemberships(_response);
+        });
+    }
+
+    protected processCalculateMemberships(response: Response): Promise<boolean> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 !== undefined ? resultData200 : <any>null;
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<boolean>(<any>null);
+    }
+}
+
+export class CompetitionModel implements ICompetitionModel {
+    id!: number;
+    date?: Date | undefined;
+    name?: string | undefined;
+    city?: string | undefined;
+
+    constructor(data?: ICompetitionModel) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.id = data["id"];
+            this.date = data["date"] ? new Date(data["date"].toString()) : <any>undefined;
+            this.name = data["name"];
+            this.city = data["city"];
+        }
+    }
+
+    static fromJS(data: any): CompetitionModel {
+        data = typeof data === 'object' ? data : {};
+        let result = new CompetitionModel();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["date"] = this.date ? this.date.toISOString() : <any>undefined;
+        data["name"] = this.name;
+        data["city"] = this.city;
+        return data; 
+    }
+}
+
+export interface ICompetitionModel {
+    id: number;
+    date?: Date | undefined;
+    name?: string | undefined;
+    city?: string | undefined;
+}
+
+export class DocumentModel implements IDocumentModel {
+    file_name?: string | undefined;
+    content_type?: string | undefined;
+    content?: string | undefined;
+
+    constructor(data?: IDocumentModel) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.file_name = data["file_name"];
+            this.content_type = data["content_type"];
+            this.content = data["content"];
+        }
+    }
+
+    static fromJS(data: any): DocumentModel {
+        data = typeof data === 'object' ? data : {};
+        let result = new DocumentModel();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["file_name"] = this.file_name;
+        data["content_type"] = this.content_type;
+        data["content"] = this.content;
+        return data; 
+    }
+}
+
+export interface IDocumentModel {
+    file_name?: string | undefined;
+    content_type?: string | undefined;
+    content?: string | undefined;
+}
+
+export class MemberGroupModel implements IMemberGroupModel {
+    id!: number;
+    name?: string | undefined;
+
+    constructor(data?: IMemberGroupModel) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.id = data["id"];
+            this.name = data["name"];
+        }
+    }
+
+    static fromJS(data: any): MemberGroupModel {
+        data = typeof data === 'object' ? data : {};
+        let result = new MemberGroupModel();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["name"] = this.name;
+        return data; 
+    }
+}
+
+export interface IMemberGroupModel {
+    id: number;
+    name?: string | undefined;
 }
 
 export class MemberModel implements IMemberModel {
@@ -240,6 +855,130 @@ export interface IMemberDetailsModel {
     mother_contact_phone?: string | undefined;
     is_active: boolean;
     member_group_id?: number | undefined;
+}
+
+export class DocumentForUpload implements IDocumentForUpload {
+    member_id!: number;
+    document_type_id!: number;
+    date?: Date | undefined;
+    file?: any | undefined;
+
+    constructor(data?: IDocumentForUpload) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.member_id = data["member_id"];
+            this.document_type_id = data["document_type_id"];
+            this.date = data["date"] ? new Date(data["date"].toString()) : <any>undefined;
+            this.file = data["file"];
+        }
+    }
+
+    static fromJS(data: any): DocumentForUpload {
+        data = typeof data === 'object' ? data : {};
+        let result = new DocumentForUpload();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["member_id"] = this.member_id;
+        data["document_type_id"] = this.document_type_id;
+        data["date"] = this.date ? this.date.toISOString() : <any>undefined;
+        data["file"] = this.file;
+        return data; 
+    }
+}
+
+export interface IDocumentForUpload {
+    member_id: number;
+    document_type_id: number;
+    date?: Date | undefined;
+    file?: any | undefined;
+}
+
+export class DocumentModel2 implements IDocumentModel2 {
+    file_name?: string | undefined;
+    content_type?: string | undefined;
+    member_id!: number;
+    document_type!: number;
+    id!: number;
+    type_name?: string | undefined;
+    content?: string | undefined;
+    expiration_date?: Date | undefined;
+
+    constructor(data?: IDocumentModel2) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.file_name = data["file_name"];
+            this.content_type = data["content_type"];
+            this.member_id = data["member_id"];
+            this.document_type = data["document_type"];
+            this.id = data["id"];
+            this.type_name = data["type_name"];
+            this.content = data["content"];
+            this.expiration_date = data["expiration_date"] ? new Date(data["expiration_date"].toString()) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): DocumentModel2 {
+        data = typeof data === 'object' ? data : {};
+        let result = new DocumentModel2();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["file_name"] = this.file_name;
+        data["content_type"] = this.content_type;
+        data["member_id"] = this.member_id;
+        data["document_type"] = this.document_type;
+        data["id"] = this.id;
+        data["type_name"] = this.type_name;
+        data["content"] = this.content;
+        data["expiration_date"] = this.expiration_date ? this.expiration_date.toISOString() : <any>undefined;
+        return data; 
+    }
+}
+
+export interface IDocumentModel2 {
+    file_name?: string | undefined;
+    content_type?: string | undefined;
+    member_id: number;
+    document_type: number;
+    id: number;
+    type_name?: string | undefined;
+    content?: string | undefined;
+    expiration_date?: Date | undefined;
+}
+
+export interface FileParameter {
+    data: any;
+    fileName: string;
+}
+
+export interface FileResponse {
+    data: Blob;
+    status: number;
+    fileName?: string;
+    headers?: { [name: string]: any };
 }
 
 export class SwaggerException extends Error {

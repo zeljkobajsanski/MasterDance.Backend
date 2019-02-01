@@ -6,10 +6,11 @@ using MasterDance.Application.Infrastructure;
 using MasterDance.Application.UseCases.Members.Models;
 using MasterDance.Persistence;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace MasterDance.Application.UseCases.Members.Queries
 {
-    public class GetMembers
+    public class GetMembersQuery
     {
         public class Request : IRequest<IEnumerable<MemberModel>> {}
         
@@ -20,7 +21,8 @@ namespace MasterDance.Application.UseCases.Members.Queries
 
             public override async Task<IEnumerable<MemberModel>> Handle(Request request, CancellationToken cancellationToken)
             {
-                return DbContext.Members.Select(Projections.ToMemberModel()).ToArray();
+                return await DbContext.Members.Select(Projections.ToMemberModel())
+                    .ToArrayAsync(cancellationToken);
             }
         }
     }

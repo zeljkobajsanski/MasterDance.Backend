@@ -18,9 +18,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Folder Include="Interfaces\" />
-        <Folder Include="UseCases\" />
-        <Folder Include="UseCases\Competitions" />
+      <Folder Include="UseCases\Memberships\Queries\" />
     </ItemGroup>
 
 </Project>

@@ -26,5 +26,7 @@ namespace MasterDance.Domain.Entities
         public bool IsActive { get; set; }
         public MemberGroup MemberGroup { get; set; }
         public int? MemberGroupId { get; set; }
+        public bool Dance { get; set; }
+        public bool Gymnastics { get; set; }
     }
 }

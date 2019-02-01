@@ -1,18 +1,21 @@
 using System;
 using System.Linq;
 using System.Threading;
+using MasterDance.Application.Interfaces;
 using MasterDance.Application.UseCases.Members.Commands;
 using MasterDance.Application.UseCases.Members.Models;
 using MasterDance.Application.UseCases.Members.Queries;
 using MasterDance.ApplicationTests.Helpers;
 using MasterDance.Domain.Entities;
 using MasterDance.Domain.ValueObjects;
+using NSubstitute;
 using Xunit;
 
 namespace MasterDance.ApplicationTests.UseCases
 {
     public class Members
     {
+        private IImageService _mockImageService = Substitute.For<IImageService>();
         [Fact]
         public async void SaveNewMember()
         {
@@ -32,7 +35,7 @@ namespace MasterDance.ApplicationTests.UseCases
                         MotherContactPhone = "063 518885"
                     };
                     var actual =
-                        await new SaveMember.Handler(context).Handle(new SaveMember.Request(member), CancellationToken.None);
+                        await new SaveMemberCommand.Handler(context, _mockImageService).Handle(new SaveMemberCommand.Request(member), CancellationToken.None);
                 
                     Assert.NotEqual(0, actual.Id);
                 }
@@ -76,7 +79,7 @@ namespace MasterDance.ApplicationTests.UseCases
                     
                     // Act
                     var actual =
-                        await new SaveMember.Handler(context).Handle(new SaveMember.Request(member), CancellationToken.None);
+                        await new SaveMemberCommand.Handler(context, _mockImageService).Handle(new SaveMemberCommand.Request(member), CancellationToken.None);
                 
                     // Assert
                     Assert.Equal("Zeljko", actual.FatherFirstName);
@@ -117,7 +120,7 @@ namespace MasterDance.ApplicationTests.UseCases
                 using (var db = dbFactory.GetContext())
                 {
                     // Act
-                    var actual = await new GetMembers.Handler(db).Handle(new GetMembers.Request(), CancellationToken.None);
+                    var actual = await new GetMembersQuery.Handler(db).Handle(new GetMembersQuery.Request(), CancellationToken.None);
                     
                     
                     // Assert

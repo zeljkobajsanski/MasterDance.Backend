@@ -24,6 +24,7 @@ namespace MasterDance.Persistence.Configurations
                     parent.Property(p => p.Name).HasColumnName("Mother").HasMaxLength(255);
                     parent.Property(p => p.Phone).HasColumnName("MotherPhone").HasMaxLength(255);
                 });
+            builder.Property(x => x.Dance).HasDefaultValue(true);
         }
     }
 }

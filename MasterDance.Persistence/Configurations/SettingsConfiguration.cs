@@ -8,7 +8,8 @@ namespace MasterDance.Persistence.Configurations
     {
         public void Configure(EntityTypeBuilder<Settings> builder)
         {
-            builder.Property(x => x.MembershipAmount).HasColumnType("money");
+            builder.Property(x => x.Key).IsRequired().HasMaxLength(64);
+            builder.Property(x => x.Value).IsRequired().HasMaxLength(512);
         }
     }
 }

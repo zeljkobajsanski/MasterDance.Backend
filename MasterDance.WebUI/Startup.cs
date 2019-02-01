@@ -6,6 +6,8 @@ using MasterDance.Persistence.Extensions;
 using MasterDance.WebUI.Extensions;
 using MasterDance.WebUI.Filters;
 using FluentValidation.AspNetCore;
+using MasterDance.Application;
+using MasterDance.WebUI.Models;
 using MediatR;
 using MediatR.Pipeline;
 using Microsoft.AspNetCore.Builder;
@@ -35,18 +37,23 @@ namespace MasterDance.WebUI
                         // options.Filters.Add(typeof(CustomExceptionFilterAttribute)) <!-- User error filter if global error handler was not set
                     }
                 ).SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
-                 .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<FluentValidatorMarkerClass>()); ;
+                 .AddFluentValidation(fv =>
+                {
+                    fv.RegisterValidatorsFromAssemblyContaining<FluentValidatorMarkerClass>();
+                    fv.RegisterValidatorsFromAssembly(Assembly.GetExecutingAssembly());
+                    fv.RunDefaultMvcValidationAfterFluentValidationExecutes = false;
+                });
 
             // Add MediatR
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(RequestPerformanceBehaviour<,>));
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(RequestValidationBehavior<,>));
             services.AddMediatR(typeof(MediatorHandlerPlaceholderClass).GetTypeInfo().Assembly);
 
-            // Customise default API behavour
-            services.Configure<ApiBehaviorOptions>(options =>
-            {
-                options.SuppressModelStateInvalidFilter = true;
-            });
+            // Customise default API behaviour
+            //services.Configure<ApiBehaviorOptions>(options =>
+            //{
+            //    options.SuppressModelStateInvalidFilter = true;
+            //});
 
             // Swagger
             services.AddSwaggerDocument(config =>
@@ -63,6 +70,7 @@ namespace MasterDance.WebUI
             // Application modules
             services.AddInfrastructureModule();
             services.AddPersistenceModule(Configuration.GetConnectionString("Database"));
+            services.AddApplicationModule();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -79,7 +87,7 @@ namespace MasterDance.WebUI
             }
             loggerFactory.AddFile(Configuration.GetSection("Logging"));
             app.UseGlobalErrorHandler(loggerFactory.CreateLogger("Default")); // <-- Global error handler
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
             app.UseSwagger();
             app.UseSwaggerUi3();
             app.UseFileServer();

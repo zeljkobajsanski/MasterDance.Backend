@@ -20,7 +20,8 @@ namespace MasterDance.Application.UseCases.Members.Models
                 Contact = Contact.From(detailsModel.ContactAddress, detailsModel.ContactPhone),
                 Father =  Parent.For(detailsModel.FatherFirstName, detailsModel.FatherContactPhone),
                 Mother = Parent.For(detailsModel.MotherFirstName, detailsModel.MotherContactPhone),
-                MemberGroupId = detailsModel.MemberGroupId
+                MemberGroupId = detailsModel.MemberGroupId,
+                Gymnastics = detailsModel.AttendGymnastics
             };
         }
 
@@ -38,9 +39,21 @@ namespace MasterDance.Application.UseCases.Members.Models
                 ContactAddress = member.Contact.Address,
                 ContactPhone = member.Contact.Phone,
                 FatherFirstName = member.Father.Name,
-                FatherContactPhone = member.Father.Name,
+                FatherContactPhone = member.Father.Phone,
                 MotherFirstName = member.Mother.Name,
                 MotherContactPhone = member.Mother.Phone,
+                AttendGymnastics = member.Gymnastics
+            };
+        }
+
+        public static Document ToEntity(this DocumentModel model)
+        {
+            return new Document()
+            {
+                MemberId = model.MemberId,
+                TypeId = model.DocumentType,
+                ExpirationDate = model.ExpirationDate,
+                Content = Blob.For(model.Content, model.FileName, model.ContentType)
             };
         }
     }

@@ -14,6 +14,11 @@ namespace MasterDance.Persistence
 
         public DbSet<Member> Members { get; set; }
         public DbSet<MemberGroup> MemberGroups { get; set; }
+        public DbSet<DocumentType> DocumentTypes { get; set; }
+        public DbSet<Document> Documents { get; set; }
+        public DbSet<Competition> Competitions { get; set; }
+        public DbSet<Settings> Settings { get; set; }
+        public DbSet<TrainingType> TrainingTypes { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

@@ -13,10 +13,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Configurations\" />
-    </ItemGroup>
-
-    <ItemGroup>
       <ProjectReference Include="..\MasterDance.Common\MasterDance.Common.csproj" />
       <ProjectReference Include="..\MasterDance.Domain\MasterDance.Domain.csproj" />
     </ItemGroup>

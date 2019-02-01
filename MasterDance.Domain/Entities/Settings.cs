@@ -4,6 +4,7 @@ namespace MasterDance.Domain.Entities
 {
     public class Settings : Entity
     {
-        public decimal MembershipAmount { get; set; }
+        public string Key { get; set; }
+        public string Value { get; set; }
     }
 }
