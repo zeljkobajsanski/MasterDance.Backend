@@ -1,0 +1,12 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MasterDance.Application\MasterDance.Application.csproj" />
+    <ProjectReference Include="..\MasterDance.Common\MasterDance.Common.csproj" />
+  </ItemGroup>
+
+</Project>
