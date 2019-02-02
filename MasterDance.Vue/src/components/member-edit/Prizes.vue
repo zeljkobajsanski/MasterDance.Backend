@@ -6,8 +6,21 @@
                     <label class="control-label col-sm-3">Takmicenje</label>
                     <div class="col-sm-9">
                         <select class="form-control" v-model="model.competitionId">
-                            <option v-for="c in competitions" :value="c.id">{{c.name}}</option>
+                            <option value="">-</option>
+                            <option v-for="(c) in competitions" :key="c.id" :value="c.id">{{c.name}}</option>
                         </select>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-3 control-label">Kategorija</label>
+                    <div class="col-sm-9">
+                        <input class="form-control" v-model="model.category">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-3 control-label">Koreografija</label>
+                    <div class="col-sm-9">
+                        <input class="form-control" v-model="model.choreography">
                     </div>
                 </div>
                 <div class="form-group row">
@@ -50,18 +63,24 @@
     import {Component, Prop, Watch} from "vue-property-decorator";
     import ModalDialog from "@/components/common/ModalDialog.vue";
     import {State} from "vuex-class";
-    import {MembersProxy, PrizeModel} from "@/services/BackendProxies";
+    import {CompetitionModel, CompetitionsProxy, MembersProxy, PrizeModel} from "@/services/BackendProxies";
 
+    //TODO: Category, Choreography
     @Component({
         components: {ModalDialog}
     })
     export default class Prizes extends Vue {
         @Prop() memberId: number;
-        @State competitions;
         data: PrizeModel[] = [];
         model = new PrizeModel();
+        competitions: CompetitionModel[] = [];
 
         private membersProxy = new MembersProxy();
+        private competitionsProxy = new CompetitionsProxy();
+
+        async created() {
+            this.competitions = await this.competitionsProxy.getCompetitions();
+        }
 
         @Watch('memberId')
         async onMemberIdChanged(id) {
@@ -70,14 +89,15 @@
         }
 
         addPrize() {
-            this.model = this.model;
+            this.model = new PrizeModel();
             (<ModalDialog>this.$refs.dialog).open();
         }
 
         async save() {
             try {
-                this.model.clone();
-                const data = await this.membersProxy.savePrize(this.memberId, this.model);
+                const prize = this.model.clone();
+                prize.memberId = this.memberId;
+                const data = await this.membersProxy.savePrize(this.memberId, prize);
                 this.data = data;
                 (<ModalDialog>this.$refs.dialog).close();
             } catch (err) {
@@ -85,7 +105,7 @@
             }
         }
 
-        edit(prize) {
+        edit(prize: PrizeModel) {
             this.model = prize;
             (<ModalDialog>this.$refs.dialog).open();
         }

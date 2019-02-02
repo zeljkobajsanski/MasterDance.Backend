@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -31,7 +32,14 @@ namespace MasterDance.Application.UseCases.Members.Queries
             {
                 return await DbContext.Memberships
                     .Where(x => x.MemberId == request.Id)
-                    .Select(Projections.ToModel())
+                    .GroupBy(x => new{x.MemberId, x.Year, x.Month})
+                    .Select(x => new MembershipModel()
+                    {
+                        Date = new DateTime(x.Key.Year, x.Key.Month, 1),
+                        MemberId = x.Key.MemberId,
+                        Amount = x.Sum(y => y.Amount),
+                        PaidAmount = x.SelectMany(y => y.Payments).Sum(p => p.Amount)
+                    })
                     .ToArrayAsync(cancellationToken);
             }
         }

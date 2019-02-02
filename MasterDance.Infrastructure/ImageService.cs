@@ -17,7 +17,7 @@ namespace MasterDance.Infrastructure
 
         public string SaveImageFromStringBase64(string stringBase64, string name)
         {
-            if (string.IsNullOrEmpty(stringBase64) || !stringBase64.StartsWith("data:")) return null;
+            if (string.IsNullOrEmpty(stringBase64) || !stringBase64.StartsWith("data:")) return stringBase64;
             
             var ix = stringBase64.IndexOf("base64,", StringComparison.InvariantCulture);
             stringBase64 = stringBase64.Substring(ix + 7);

@@ -16,7 +16,7 @@
                     <tbody>
                         <tr v-for="competition in competitions" @click="setModel(competition)">
                             <td>{{competition.name}}</td>
-                            <td>{{competition.date | date}}</td>
+                            <td>{{competition.date}}</td>
                             <td>{{competition.city}}</td>
                         </tr>
                     </tbody>
@@ -82,9 +82,10 @@
         components: {Widget}
     })
     export default class Competitions extends Vue {
-        model = {...new CompetitionModel()};
+        model = new CompetitionModel();
         competitions: CompetitionModel[] = [];
         dateConfig = {
+            locale: 'sr',
             format: 'DD.MM.YYYY'
         };
         isSaving = false;
@@ -97,24 +98,20 @@
         }
 
         reset() {
-            this.model = {...new CompetitionModel()};
+            this.model = new CompetitionModel();
         }
 
-        setModel(competition) {
-            const model = competition.clone();
-            if (model.date) {
-                model.date = moment(model.date).toDate();
-            }
-            this.model = model;
+        setModel(competition: CompetitionModel) {
+            this.model = competition;
         }
 
         async save() {
-            const competition = {...this.model};
+            const competition = this.model.clone();
             this.$validator.validateAll().then(async (ok) => {
                 if (ok) {
                     this.isSaving = true;
                     try {
-                        competition.date = convertStringToDateFormat(this.model.date);
+                        //competition.date = convertStringToDateFormat(this.model.date);
                         const data = await this.competitionsProxy.saveCompetition(competition);
                         this.model.id = data;
                         notifications.info('Podaci su uspesno sacuvani');

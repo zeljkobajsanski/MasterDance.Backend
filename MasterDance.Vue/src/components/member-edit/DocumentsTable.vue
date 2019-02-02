@@ -18,7 +18,7 @@
                 <tbody>
                 <tr v-for="document in documentList" :key="document.id">
                     <td>{{document.typeName}}</td>
-                    <td>{{document.expirationDate | date}}</td>
+                    <td>{{document.expirationDate}}</td>
                     <td>
                         <div class="btn-group">
                             <button class="btn btn-xs btn-inverse" title="Pregledaj" @click="preview(document.id)"><i class="fa fa-search"></i> </button>
@@ -90,7 +90,7 @@
 
         async deleteDocument(document) {
             try {
-                const data = await this.membersProxy.deleteDocument(0, document.id);
+                const data = await this.membersProxy.deleteDocument(this.member.id, document.id);
                 this.documentList = data;
             } catch(err) {
             }

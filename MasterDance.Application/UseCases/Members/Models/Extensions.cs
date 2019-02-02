@@ -21,7 +21,8 @@ namespace MasterDance.Application.UseCases.Members.Models
                 Father =  Parent.For(detailsModel.FatherFirstName, detailsModel.FatherContactPhone),
                 Mother = Parent.For(detailsModel.MotherFirstName, detailsModel.MotherContactPhone),
                 MemberGroupId = detailsModel.MemberGroupId,
-                Gymnastics = detailsModel.AttendGymnastics
+                Gymnastics = detailsModel.AttendGymnastics,
+                JMBG = detailsModel.JMBG,
             };
         }
 
@@ -42,7 +43,9 @@ namespace MasterDance.Application.UseCases.Members.Models
                 FatherContactPhone = member.Father.Phone,
                 MotherFirstName = member.Mother.Name,
                 MotherContactPhone = member.Mother.Phone,
-                AttendGymnastics = member.Gymnastics
+                AttendGymnastics = member.Gymnastics,
+                MemberGroupId = member.MemberGroupId,
+                JMBG = member.JMBG
             };
         }
 

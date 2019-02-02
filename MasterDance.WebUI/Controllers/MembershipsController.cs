@@ -1,6 +1,12 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Net;
+using System.Threading.Tasks;
+using MasterDance.Application.UseCases.Dashboard.Models;
+using MasterDance.Application.UseCases.Dashboard.Queries;
 using MasterDance.Application.UseCases.Memberships.Commands;
 using Microsoft.AspNetCore.Mvc;
+using NSwag;
+using NSwag.Annotations;
 
 namespace MasterDance.WebUI.Controllers
 {
@@ -8,10 +14,18 @@ namespace MasterDance.WebUI.Controllers
     {
         [HttpPost("[action]")]
         [ProducesResponseType(typeof(bool), 200)]
-        public async Task<ActionResult> CalculateMemberships([FromQuery]  int year, int month)
+        public async Task<ActionResult> CalculateMemberships(CalculateMembershipCommand.Request request)
         {
-            await Mediator.Send(new CalculateMembershipCommand.Request(year, month));
+            await Mediator.Send(request);
             return Ok(true);
+        }
+
+        [HttpGet("[action]")]
+        [SwaggerResponse(HttpStatusCode.OK, typeof(ICollection<DebtModel>))]
+        public async Task<ActionResult> GetDebtList()
+        {
+            var result = await Mediator.Send(new GetDebtList.Request());
+            return Ok(result);
         }
     }
 }

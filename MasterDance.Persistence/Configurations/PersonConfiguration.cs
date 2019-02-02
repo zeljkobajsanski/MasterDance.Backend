@@ -23,6 +23,9 @@ namespace MasterDance.Persistence.Configurations
                    .HasValue<Coach>("Coach");
             
             builder.Property(x => x.Id).ValueGeneratedOnAdd();
+            builder.Property(x => x.JMBG).HasMaxLength(13);
+            builder.Property(x => x.IsActive).HasDefaultValue(true);
+            //builder.HasQueryFilter(x => x.IsActive);
         }
     }
 }

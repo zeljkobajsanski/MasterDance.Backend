@@ -11,6 +11,8 @@ namespace MasterDance.Application.UseCases.Prizes.Models
         public DateTime? CompetitionDate { get; set; }
         public int MemberId { get; set; }
         public string Title { get; set; }
+        public string Category { get; set; }
+        public string Choreography { get; set; }
     }
 
     public class Validation : AbstractValidator<PrizeModel>

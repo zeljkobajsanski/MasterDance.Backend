@@ -10,5 +10,7 @@ namespace MasterDance.Domain.Entities
         public Competition Competition { get; set; }
         public int CompetitionId { get; set; }
         public string Title { get; set; }
+        public string Category { get; set; }
+        public string Choreography { get; set; }
     }
 }

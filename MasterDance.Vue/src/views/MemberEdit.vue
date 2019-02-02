@@ -64,12 +64,18 @@
                                                  :config="dateConfig"
                                                  name="date-of-birth" v-model="member.dateOfBirth" v-validate.immediate="'required'"/></div>
                             </div>
+                            <div class="form-group" :class="{'has-error': errors.has('jmbg')}">
+                                <label class="control-label col-sm-4" for="last-name">JMBG </label>
+                                <div class="col-sm-8">
+                                    <input type="text" id="jmbg" name="jmbg" class="form-control input-transparent"
+                                           v-model="member.jmbg" v-validate.immediate="'length:13'"></div>
+                            </div>
                             <div class="form-group">
                                 <label class="control-label col-sm-4">Pripada grupi </label>
                                 <div class="col-sm-8">
                                     <select class="form-control input-transparent" v-select2 v-model="member.memberGroupId">
                                         <option value="">-</option>
-                                        <option v-for="g in memberGroups" :value="g.id">{{g.name}}</option>
+                                        <option v-for="g in memberGroups" :key="g.id" :value="g.id">{{g.name}}</option>
                                     </select>
                                 </div>
                             </div>
@@ -79,6 +85,15 @@
                                     <date-picker class="date-picker form-control input-transparent"
                                                  :config="dateConfig"
                                                  name="date-of-birth" v-model="member.joinedDate" /></div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-sm-4">Dodatne aktivnosti</label>
+                                <div class="col-sm-8">
+                                    <div class="checkbox checkbox-primary">
+                                        <input type="checkbox" id="gym" name="gender" v-model="member.attendGymnastics">
+                                        <label for="gym"> Gimnastika</label>
+                                    </div>
+                                </div>
                             </div>
                         </fieldset>
                         <fieldset>
@@ -193,9 +208,8 @@
     import Memberships from '@/components/member-edit/Memberships.vue'
     import {State} from "vuex-class";
     import {DocumentsProxy, DocumentTypesProxy, MemberDetailsModel, MembersProxy} from "@/services/BackendProxies";
-    import {convertStringToDateFormat} from "@/utils";
 
-
+    //TODO: JMBG, IsActive, Gym
     @Component({components: {PageHeader, Widget, ImageEditModal, Tabs, Tab, AddDocumentDialog, documentsTable, prizes, Memberships}})
     export default class MemberEdit extends Vue {
         @State memberGroups;
@@ -204,7 +218,9 @@
         isSaving = false;
         documents = [];
         dateConfig = {
-            format: 'DD.MM.YYYY'
+            format: 'DD.MM.YYYY',
+            locale: 'sr',
+            useCurrent: false
         };
 
         private membersProxy = new MembersProxy();
@@ -224,8 +240,6 @@
             try {
                 this.isSaving = true;
                 const member = this.member.clone();
-                member.dateOfBirth = convertStringToDateFormat(member.dateOfBirth);
-                member.joinedDate = convertStringToDateFormat(member.joinedDate);
                 const data = await this.membersProxy.saveMember(member);
                 this.member = data;
                 notifications.info('Podaci su uspesno sacuvani');

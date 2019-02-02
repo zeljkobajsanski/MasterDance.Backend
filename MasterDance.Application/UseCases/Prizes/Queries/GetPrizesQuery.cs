@@ -29,7 +29,7 @@ namespace MasterDance.Application.UseCases.Prizes.Queries
 
             public override async Task<ICollection<PrizeModel>> Handle(Request request, CancellationToken cancellationToken)
             {
-                return await DbContext.Prizes.Select(x => x.ToModel()).ToArrayAsync(cancellationToken);
+                return await DbContext.Prizes.Include(x => x.Competition).Select(x => x.ToModel()).ToArrayAsync(cancellationToken);
             }
         }
     }

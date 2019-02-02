@@ -46,7 +46,9 @@
         document: {documentTypeId: number, date: string, file: FileParameter} = {documentTypeId: 1, date: null, file: null};
 
         dateConfig = {
-            format: 'DD.MM.YYYY'
+            format: 'DD.MM.YYYY',
+            locale: 'sr',
+            useCurrent: false
         };
 
         private documentTypesProxy = new DocumentTypesProxy();
@@ -74,7 +76,7 @@
 
         async saveDocument() {
             const data = await this.membersProxy.uploadDocument(
-                this.member.id, this.document.documentTypeId, convertStringToDateFormat(this.document.date), this.document.file, this.member.id);
+                this.member.id, this.document.documentTypeId, convertStringToDateFormat(this.document.date), this.document.file);
             this.onSaved();
             (<ModalDialog>this.$refs['dialog']).close();
         }

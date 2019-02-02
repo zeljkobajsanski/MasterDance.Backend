@@ -2,6 +2,7 @@
 using MasterDance.Domain.Entities;
 using MasterDance.Domain.ValueObjects;
 using MasterDance.Persistence.Configurations;
+using MasterDance.Persistence.QueryTypes;
 using Microsoft.EntityFrameworkCore;
 
 namespace MasterDance.Persistence
@@ -22,13 +23,13 @@ namespace MasterDance.Persistence
         public DbSet<Membership> Memberships { get; set; }
         public DbSet<Payment> Payments { get; set; }
         public DbSet<Prize> Prizes { get; set; }
+        public DbQuery<GetDebtList> GetDebtList { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
             MemberConfiguration.Configure(modelBuilder);
             DocumentConfiguration.Configure(modelBuilder);
-
         }
     }
 }

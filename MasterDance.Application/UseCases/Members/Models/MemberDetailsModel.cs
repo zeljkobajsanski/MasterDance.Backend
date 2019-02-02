@@ -25,6 +25,7 @@ namespace MasterDance.Application.UseCases.Members.Models
         public bool IsActive { get; set; }
         public int? MemberGroupId { get; set; }
         public bool AttendGymnastics { get; set; }
+        public string JMBG { get; set; }
     }
 
     public class MemberDetailsValidation : AbstractValidator<MemberDetailsModel>

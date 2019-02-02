@@ -23,7 +23,6 @@ namespace MasterDance.Domain.Entities
         public Parent Father { get; set; }
         public Parent Mother { get; set; }
         public ICollection<Prize> Prizes { get; private set; }
-        public bool IsActive { get; set; }
         public MemberGroup MemberGroup { get; set; }
         public int? MemberGroupId { get; set; }
         public bool Dance { get; set; }

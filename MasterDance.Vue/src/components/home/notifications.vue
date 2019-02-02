@@ -31,20 +31,22 @@
     import Vue from 'vue'
     import {Component, Prop, Watch} from "vue-property-decorator";
     import Widget from "@/components/common/Widget.vue";
+    import {DashboardProxy} from "@/services/BackendProxies";
 
     @Component({
         components: {Widget}
     })
     export default class Notifications extends Vue {
         data = [];
+        private dashboardProxy = new DashboardProxy();
 
         created() {
             this.refresh();
         }
 
         async refresh() {
-            /*const {data} = await api.getNotifications(); //TODO: Implement this
-            this.data = data;*/
+            const data = await this.dashboardProxy.getNotifications();
+            this.data = data;
         }
     }
 </script>

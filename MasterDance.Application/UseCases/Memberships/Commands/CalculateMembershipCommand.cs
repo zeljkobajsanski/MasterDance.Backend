@@ -13,14 +13,8 @@ namespace MasterDance.Application.UseCases.Memberships.Commands
     {
         public class Request : IRequest<Unit>
         {
-            public Request(int year, int month)
-            {
-                Year = year;
-                Month = month;
-            }
-
-            public int Year { get; }
-            public int Month { get; }
+            public int Year { get; set; }
+            public int Month { get; set; }
         }
         public class Handler : RequestHandlerBase<Request, Unit>
         {

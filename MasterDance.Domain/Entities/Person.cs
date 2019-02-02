@@ -9,5 +9,7 @@ namespace MasterDance.Domain.Entities
         public string LastName { get; set; }
         public Contact Contact { get; set; } = new Contact();
         public Gender Gender { get; set; }
+        public bool IsActive { get; set; }
+        public string JMBG { get; set; }
     }
 }

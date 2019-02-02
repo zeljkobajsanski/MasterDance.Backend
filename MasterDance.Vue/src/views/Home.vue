@@ -35,6 +35,7 @@ import widget from '@/components/common/Widget.vue';
 import PageHeader from "../components/common/PageHeader.vue";
 import debtList from '@/components/home/due-list.vue'
 import notifications from '@/components/home/notifications.vue'
+import {DashboardProxy} from "@/services/BackendProxies";
 
 @Component({
     components: {notifications, PageHeader, widget, debtList}
@@ -44,11 +45,13 @@ export default class Home extends Vue {
     profit = 0;
     totalDebt = 0;
 
+    private dashboardProxy = new DashboardProxy();
+
     async created() {
-        /*const {data} = await api.getStats(); //TODO: Implement dashboard
-        this.totalMembers = data.members;
+        const data = await this.dashboardProxy.getDashboard();
+        this.totalMembers = data.totalMembers;
         this.totalDebt = data.debit;
-        this.profit = data.profit;*/
+        this.profit = data.profit;
     }
 }
 </script>

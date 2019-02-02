@@ -11,6 +11,7 @@ namespace MasterDance.Persistence.Configurations
         public static void Configure(ModelBuilder modelBuilder)
         {
             var builder = modelBuilder.Entity<Member>();
+            builder.Property(x => x.Dance).HasDefaultValueSql("1");
             builder.Property(x => x.DateOfBirth).HasColumnType("date");
             builder.Property(x => x.JoinedDate).HasColumnType("date");
             builder.OwnsOne(x => x.Father, parent =>
@@ -24,7 +25,8 @@ namespace MasterDance.Persistence.Configurations
                     parent.Property(p => p.Name).HasColumnName("Mother").HasMaxLength(255);
                     parent.Property(p => p.Phone).HasColumnName("MotherPhone").HasMaxLength(255);
                 });
-            builder.Property(x => x.Dance).HasDefaultValue(true);
+            builder.Property(x => x.Dance).HasDefaultValueSql("1");
+
         }
     }
 }

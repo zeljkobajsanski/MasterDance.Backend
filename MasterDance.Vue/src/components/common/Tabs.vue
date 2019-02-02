@@ -2,7 +2,7 @@
     <div>
         <ul class="nav nav-tabs">
             <li v-for="(tab, i) in tabs" :key="i" :class="{active: tab.isActive}" @click="selectTab(tab)">
-                <a href="javascript: void(0);" data-toggle="tab">{{tab.title}}</a>
+                <a :href="'#tab_' + i" data-toggle="tab">{{tab.title}}</a>
             </li>
         </ul>
         <div class="tab-content">

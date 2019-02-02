@@ -1,24 +1,27 @@
 <template>
     <widget>
-        <p class="text-right balance" :class="{'text-danger': balance < 0}">Stanje: {{balance}}</p>
+        <div slot="actions">
+            <button class="btn btn-danger pull-right" @click="addPayment">Uplata</button>
+            <div class="clearfix"></div>
+        </div>
+        <p class="text-right balance" :class="{'text-danger': balance < 0}">Stanje: {{balance | money}}</p>
         <table class="table">
             <thead>
                 <tr>
                     <th>Datum</th>
                     <th>Zaduzenje</th>
                     <th>Placeno</th>
-                    <th></th>
                 </tr>
             </thead>
             <tbody>
                 <tr v-for="membership in data">
                     <td>{{membership.date}}</td>
-                    <td>{{membership.amount}}</td>
-                    <td>{{membership.paidAmount}}</td>
-                    <div class="btn-group">
+                    <td>{{membership.amount | money}}</td>
+                    <td>{{membership.paidAmount | money}}</td>
+                   <!-- <div class="btn-group">
                         <button class="btn btn-xs btn-inverse" title="Evidentiraj uplatu" @click="addPayment(membership)"><i class="fa fa-pencil"></i> </button>
                         <button class="btn btn-xs btn-inverse" title="Obrisi uplate" @click="removePayments(membership)"><i class="fa fa-trash"></i> </button>
-                    </div>
+                    </div>-->
                 </tr>
             </tbody>
         </table>

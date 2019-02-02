@@ -11,7 +11,9 @@ namespace MasterDance.Application.UseCases.Prizes.Models
                 Id = model.Id,
                 MemberId = model.MemberId,
                 CompetitionId = model.CompetitionId,
-                Title = model.Title
+                Title = model.Title,
+                Category = model.Category,
+                Choreography = model.Choreography
             };
         }
 
@@ -22,7 +24,11 @@ namespace MasterDance.Application.UseCases.Prizes.Models
                 Id = entity.Id,
                 MemberId = entity.MemberId,
                 CompetitionId = entity.CompetitionId,
-                Title = entity.Title
+                CompetitionDate = entity.Competition?.Date,
+                CompetitionName = entity.Competition?.Name,
+                Title = entity.Title,
+                Category = entity.Category,
+                Choreography = entity.Choreography
             };
         }
     }

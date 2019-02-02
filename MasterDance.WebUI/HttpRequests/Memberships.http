@@ -1,2 +1,8 @@
-POST https://localhost:5001/api/Memberships/CalculateMemberships?year=2019&month=1
+POST https://localhost:5001/api/Memberships/CalculateMemberships
+Content-Type: application/json
+
+{"year": 2018, "month": 12}
+###
+
+GET https://localhost:5001/api/Memberships/GetDebtList
 ###

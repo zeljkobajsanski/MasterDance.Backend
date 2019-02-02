@@ -42,7 +42,7 @@ namespace MasterDance.WebUI
                     fv.RegisterValidatorsFromAssemblyContaining<FluentValidatorMarkerClass>();
                     fv.RegisterValidatorsFromAssembly(Assembly.GetExecutingAssembly());
                     fv.RunDefaultMvcValidationAfterFluentValidationExecutes = false;
-                });
+                }).AddJsonOptions(json => { json.SerializerSettings.DateFormatString = "dd.MM.yyyy"; });
 
             // Add MediatR
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(RequestPerformanceBehaviour<,>));

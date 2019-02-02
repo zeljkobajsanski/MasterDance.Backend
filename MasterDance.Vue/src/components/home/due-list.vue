@@ -31,6 +31,7 @@
     import Vue from 'vue'
     import {Component, Prop, Watch} from "vue-property-decorator";
     import Widget from "@/components/common/Widget.vue";
+    import {MembershipsProxy} from "@/services/BackendProxies";
 
     @Component({
         components: {Widget}
@@ -38,13 +39,14 @@
     export default class DueList extends Vue {
         data = [];
 
+        private membershipsProxy = new MembershipsProxy();
+
         created() {
             this.refresh();
         }
 
         async refresh() {
-            /*const {data} = await api.getBalanceSheet();   //TODO: Implement this
-            this.data = data.filter(x => x.balance < 0);*/
+            this.data = await this.membershipsProxy.getDebtList();
         }
     }
 </script>

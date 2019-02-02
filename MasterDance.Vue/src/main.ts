@@ -7,9 +7,10 @@ import 'bootstrap';
 import datePicker from 'vue-bootstrap-datetimepicker';
 import VeeValidate from 'vee-validate';
 import moment from 'moment';
+import 'moment/locale/sr'
 import * as numeral from 'numeral';
-import 'select2';
-import 'select2/dist/css/select2.min.css'
+import Select2 from './plugins/select2.plugin';
+
 
 declare const $: any;
 
@@ -18,7 +19,9 @@ Vue.use(datePicker);
 Vue.use(VeeValidate);
 Vue.filter('date', (date: Date) => date ? moment(date).format('DD.MM.YYYY') : '-');
 Vue.filter('money', (value: number) => numeral(value || 0).format('0,0.00'));
-Vue.directive('select2', el => $(el).select2({width: '100%'}));
+Vue.use(Select2);
+
+moment.locale('sr');
 
 new Vue({
   router,
