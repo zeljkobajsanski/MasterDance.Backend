@@ -1,7 +1,9 @@
-﻿using System.Threading;
+﻿using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using MasterDance.Application.Infrastructure;
 using MasterDance.Application.UseCases.MemberGroups.Models;
+using MasterDance.Application.UseCases.MemberGroups.Queries;
 using MasterDance.Domain.Entities;
 using MasterDance.Persistence;
 using MediatR;
@@ -10,7 +12,7 @@ namespace MasterDance.Application.UseCases.MemberGroups.Commands
 {
     public class SaveMemberGroupCommand
     {
-        public class Request : IRequest<MemberGroupModel>
+        public class Request : IRequest<ICollection<MemberGroupModel>>
         {
             public Request(MemberGroupModel model)
             {
@@ -20,13 +22,15 @@ namespace MasterDance.Application.UseCases.MemberGroups.Commands
             public MemberGroupModel Model { get; }
         }
 
-        public class Handler : RequestHandlerBase<Request, MemberGroupModel>
+        public class Handler : RequestHandlerBase<Request, ICollection<MemberGroupModel>>
         {
-            public Handler(MasterDanceDbContext dbContext) : base(dbContext)
+            private IMediator _mediator;
+            public Handler(MasterDanceDbContext dbContext, IMediator mediator) : base(dbContext)
             {
+                _mediator = mediator;
             }
 
-            public override async Task<MemberGroupModel> Handle(Request request, CancellationToken cancellationToken)
+            public override async Task<ICollection<MemberGroupModel>> Handle(Request request, CancellationToken cancellationToken)
             {
                 var entity = new MemberGroup()
                 {
@@ -35,7 +39,7 @@ namespace MasterDance.Application.UseCases.MemberGroups.Commands
                 };
                 DbContext.MemberGroups.Update(entity);
                 await DbContext.SaveChangesAsync(cancellationToken);
-                return entity.ToModel();
+                return await _mediator.Send(new GetMemberGroupsQuery.Request());
             }
         }
     }

@@ -18,7 +18,7 @@ namespace MasterDance.WebUI.Controllers
         }
 
         [HttpPost]
-        [ProducesResponseType(typeof(MemberGroupModel), 200)]
+        [ProducesResponseType(typeof(ICollection<MemberGroupModel>), 200)]
         public async Task<ActionResult> SaveMemberGroup([FromBody] MemberGroupModel model)
         {
             var result = await Mediator.Send(new SaveMemberGroupCommand.Request(model));

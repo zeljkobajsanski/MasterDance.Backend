@@ -115,9 +115,18 @@ namespace MasterDance.Persistence.Migrations
                         .HasColumnType("money");
 
                     b.Property<DateTime>("Date")
-                        .HasColumnType("datetime");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime")
+                        .HasDefaultValueSql("GETDATE()");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(255);
 
                     b.Property<int>("MemberId");
+
+                    b.Property<int>("Month");
+
+                    b.Property<int>("Year");
 
                     b.HasKey("Id");
 
@@ -192,7 +201,7 @@ namespace MasterDance.Persistence.Migrations
 
                     b.HasIndex("MemberId");
 
-                    b.ToTable("Prize");
+                    b.ToTable("Prizes");
                 });
 
             modelBuilder.Entity("MasterDance.Domain.Entities.Settings", b =>
@@ -242,7 +251,9 @@ namespace MasterDance.Persistence.Migrations
                 {
                     b.HasBaseType("MasterDance.Domain.Entities.Person");
 
-                    b.Property<bool>("Dance");
+                    b.Property<bool>("Dance")
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValue(true);
 
                     b.Property<DateTime>("DateOfBirth")
                         .HasColumnType("date");

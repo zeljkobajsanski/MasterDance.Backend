@@ -11,7 +11,17 @@ namespace MasterDance.Application.UseCases.Memberships.Commands
 {
     public class CalculateMembershipCommand
     {
-        public class Request : IRequest<Unit> { }
+        public class Request : IRequest<Unit>
+        {
+            public Request(int year, int month)
+            {
+                Year = year;
+                Month = month;
+            }
+
+            public int Year { get; }
+            public int Month { get; }
+        }
         public class Handler : RequestHandlerBase<Request, Unit>
         {
             private readonly IMembershipCalculatorFactory _membershipCalculatorFactory;
@@ -20,11 +30,11 @@ namespace MasterDance.Application.UseCases.Memberships.Commands
                 _membershipCalculatorFactory = membershipCalculatorFactory;
             }
 
-            public override Task<Unit> Handle(Request request, CancellationToken cancellationToken)
+            public override async Task<Unit> Handle(Request request, CancellationToken cancellationToken)
             {
                 IMembershipCalculator membershipCalculator =  _membershipCalculatorFactory.GetCalculator();
-                var memberships = membershipCalculator.CalculateMembership();
-                return Task.FromResult(Unit.Value);
+                await membershipCalculator.CalculateMembershipAsync(request.Year, request.Month);
+                return Unit.Value;
             }
         }
     }

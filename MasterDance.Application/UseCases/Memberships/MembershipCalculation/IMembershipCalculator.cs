@@ -1,10 +1,11 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using MasterDance.Domain.Entities;
 
 namespace MasterDance.Application.UseCases.Memberships.MembershipCalculation
 {
     public interface IMembershipCalculator
     {
-        ICollection<Membership> CalculateMembership();
+        Task CalculateMembershipAsync(int year, int month);
     }
 }

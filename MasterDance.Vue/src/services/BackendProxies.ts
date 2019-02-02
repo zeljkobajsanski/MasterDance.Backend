@@ -6,6 +6,9 @@
 //----------------------
 // ReSharper disable InconsistentNaming
 
+import {DocumentForUpload, MembersProxy} from "@/services/BackendProxies";
+import {toFormData} from "@/utils";
+
 export class CompetitionsProxy {
     private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
     private baseUrl: string;
@@ -193,7 +196,7 @@ export class DocumentTypesProxy {
         this.baseUrl = baseUrl ? baseUrl : "";
     }
 
-    getDocumentTypes(): Promise<FileResponse | null> {
+    getDocumentTypes(): Promise<DocumentTypeModel[] | null> {
         let url_ = this.baseUrl + "/api/DocumentTypes";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -209,20 +212,26 @@ export class DocumentTypesProxy {
         });
     }
 
-    protected processGetDocumentTypes(response: Response): Promise<FileResponse | null> {
+    protected processGetDocumentTypes(response: Response): Promise<DocumentTypeModel[] | null> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200 || status === 206) {
-            const contentDisposition = response.headers ? response.headers.get("content-disposition") : undefined;
-            const fileNameMatch = contentDisposition ? /filename="?([^"]*?)"?(;|$)/g.exec(contentDisposition) : undefined;
-            const fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[1] : undefined;
-            return response.blob().then(blob => { return { fileName: fileName, data: blob, status: status, headers: _headers }; });
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (resultData200 && resultData200.constructor === Array) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(DocumentTypeModel.fromJS(item));
+            }
+            return result200;
+            });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<FileResponse | null>(<any>null);
+        return Promise.resolve<DocumentTypeModel[] | null>(<any>null);
     }
 }
 
@@ -274,7 +283,7 @@ export class MemberGroupsProxy {
         return Promise.resolve<MemberGroupModel[] | null>(<any>null);
     }
 
-    saveMemberGroup(model: MemberGroupModel | null): Promise<MemberGroupModel | null> {
+    saveMemberGroup(model: MemberGroupModel | null): Promise<MemberGroupModel[] | null> {
         let url_ = this.baseUrl + "/api/MemberGroups";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -294,14 +303,18 @@ export class MemberGroupsProxy {
         });
     }
 
-    protected processSaveMemberGroup(response: Response): Promise<MemberGroupModel | null> {
+    protected processSaveMemberGroup(response: Response): Promise<MemberGroupModel[] | null> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = resultData200 ? MemberGroupModel.fromJS(resultData200) : <any>null;
+            if (resultData200 && resultData200.constructor === Array) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(MemberGroupModel.fromJS(item));
+            }
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -309,7 +322,7 @@ export class MemberGroupsProxy {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<MemberGroupModel | null>(<any>null);
+        return Promise.resolve<MemberGroupModel[] | null>(<any>null);
     }
 
     deleteMemberGroupById(id: number): Promise<MemberGroupModel[] | null> {
@@ -364,7 +377,7 @@ export class MembersProxy {
         this.baseUrl = baseUrl ? baseUrl : "";
     }
 
-    getMembers(): Promise<MemberModel | null> {
+    getMembers(): Promise<MemberModel[] | null> {
         let url_ = this.baseUrl + "/api/Members";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -380,14 +393,18 @@ export class MembersProxy {
         });
     }
 
-    protected processGetMembers(response: Response): Promise<MemberModel | null> {
+    protected processGetMembers(response: Response): Promise<MemberModel[] | null> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = resultData200 ? MemberModel.fromJS(resultData200) : <any>null;
+            if (resultData200 && resultData200.constructor === Array) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(MemberModel.fromJS(item));
+            }
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -395,21 +412,20 @@ export class MembersProxy {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<MemberModel | null>(<any>null);
+        return Promise.resolve<MemberModel[] | null>(<any>null);
     }
 
-    saveMember(member: MemberDetailsModel | null | undefined): Promise<MemberDetailsModel | null> {
+    saveMember(member: MemberDetailsModel | null): Promise<MemberDetailsModel | null> {
         let url_ = this.baseUrl + "/api/Members";
         url_ = url_.replace(/[?&]$/, "");
 
-        const content_ = new FormData();
-        if (member !== null && member !== undefined)
-            content_.append("member", member.toString());
+        const content_ = JSON.stringify(member);
 
         let options_ = <RequestInit>{
             body: content_,
             method: "POST",
             headers: {
+                "Content-Type": "application/json", 
                 "Accept": "application/json"
             }
         };
@@ -435,6 +451,88 @@ export class MembersProxy {
             });
         }
         return Promise.resolve<MemberDetailsModel | null>(<any>null);
+    }
+
+    getMember(id: number): Promise<MemberDetailsModel | null> {
+        let url_ = this.baseUrl + "/api/Members/{id}";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id)); 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ = <RequestInit>{
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetMember(_response);
+        });
+    }
+
+    protected processGetMember(response: Response): Promise<MemberDetailsModel | null> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? MemberDetailsModel.fromJS(resultData200) : <any>null;
+            return result200;
+            });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            return throwException("A server error occurred.", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<MemberDetailsModel | null>(<any>null);
+    }
+
+    getDocuments(memberId: number): Promise<DocumentModel2[] | null> {
+        let url_ = this.baseUrl + "/api/Members/{memberId}/documents";
+        if (memberId === undefined || memberId === null)
+            throw new Error("The parameter 'memberId' must be defined.");
+        url_ = url_.replace("{memberId}", encodeURIComponent("" + memberId)); 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ = <RequestInit>{
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetDocuments(_response);
+        });
+    }
+
+    protected processGetDocuments(response: Response): Promise<DocumentModel2[] | null> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (resultData200 && resultData200.constructor === Array) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(DocumentModel2.fromJS(item));
+            }
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<DocumentModel2[] | null>(<any>null);
     }
 
     uploadDocument(memberId: number, document: DocumentForUpload | null | undefined): Promise<number> {
@@ -526,6 +624,177 @@ export class MembersProxy {
         }
         return Promise.resolve<DocumentModel2[] | null>(<any>null);
     }
+
+    getMemberships(memberId: number): Promise<MembershipModel[] | null> {
+        let url_ = this.baseUrl + "/api/Members/{memberId}/memberships";
+        if (memberId === undefined || memberId === null)
+            throw new Error("The parameter 'memberId' must be defined.");
+        url_ = url_.replace("{memberId}", encodeURIComponent("" + memberId)); 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ = <RequestInit>{
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetMemberships(_response);
+        });
+    }
+
+    protected processGetMemberships(response: Response): Promise<MembershipModel[] | null> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (resultData200 && resultData200.constructor === Array) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(MembershipModel.fromJS(item));
+            }
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<MembershipModel[] | null>(<any>null);
+    }
+
+    getPrizes(memberId: number): Promise<PrizeModel[] | null> {
+        let url_ = this.baseUrl + "/api/Members/{memberId}/prizes";
+        if (memberId === undefined || memberId === null)
+            throw new Error("The parameter 'memberId' must be defined.");
+        url_ = url_.replace("{memberId}", encodeURIComponent("" + memberId)); 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ = <RequestInit>{
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetPrizes(_response);
+        });
+    }
+
+    protected processGetPrizes(response: Response): Promise<PrizeModel[] | null> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (resultData200 && resultData200.constructor === Array) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(PrizeModel.fromJS(item));
+            }
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<PrizeModel[] | null>(<any>null);
+    }
+
+    savePrize(memberId: number, prize: PrizeModel | null): Promise<PrizeModel[] | null> {
+        let url_ = this.baseUrl + "/api/Members/{memberId}/prizes";
+        if (memberId === undefined || memberId === null)
+            throw new Error("The parameter 'memberId' must be defined.");
+        url_ = url_.replace("{memberId}", encodeURIComponent("" + memberId)); 
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(prize);
+
+        let options_ = <RequestInit>{
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json", 
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processSavePrize(_response);
+        });
+    }
+
+    protected processSavePrize(response: Response): Promise<PrizeModel[] | null> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (resultData200 && resultData200.constructor === Array) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(PrizeModel.fromJS(item));
+            }
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<PrizeModel[] | null>(<any>null);
+    }
+
+    deletePrize(memberId: number, id: number): Promise<PrizeModel[] | null> {
+        let url_ = this.baseUrl + "/api/Members/{memberId}/prizes/{id}";
+        if (memberId === undefined || memberId === null)
+            throw new Error("The parameter 'memberId' must be defined.");
+        url_ = url_.replace("{memberId}", encodeURIComponent("" + memberId)); 
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id)); 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ = <RequestInit>{
+            method: "DELETE",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processDeletePrize(_response);
+        });
+    }
+
+    protected processDeletePrize(response: Response): Promise<PrizeModel[] | null> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (resultData200 && resultData200.constructor === Array) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(PrizeModel.fromJS(item));
+            }
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<PrizeModel[] | null>(<any>null);
+    }
 }
 
 export class MembershipsProxy {
@@ -538,8 +807,16 @@ export class MembershipsProxy {
         this.baseUrl = baseUrl ? baseUrl : "";
     }
 
-    calculateMemberships(): Promise<boolean> {
-        let url_ = this.baseUrl + "/api/Memberships/CalculateMemberships";
+    calculateMemberships(year: number, month: number): Promise<boolean> {
+        let url_ = this.baseUrl + "/api/Memberships/CalculateMemberships?";
+        if (year === undefined || year === null)
+            throw new Error("The parameter 'year' must be defined and cannot be null.");
+        else
+            url_ += "year=" + encodeURIComponent("" + year) + "&"; 
+        if (month === undefined || month === null)
+            throw new Error("The parameter 'month' must be defined and cannot be null.");
+        else
+            url_ += "month=" + encodeURIComponent("" + month) + "&"; 
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ = <RequestInit>{
@@ -575,7 +852,7 @@ export class MembershipsProxy {
 
 export class CompetitionModel implements ICompetitionModel {
     id!: number;
-    date?: Date | undefined;
+    date?: string | undefined;
     name?: string | undefined;
     city?: string | undefined;
 
@@ -591,7 +868,7 @@ export class CompetitionModel implements ICompetitionModel {
     init(data?: any) {
         if (data) {
             this.id = data["id"];
-            this.date = data["date"] ? new Date(data["date"].toString()) : <any>undefined;
+            this.date = data["date"];
             this.name = data["name"];
             this.city = data["city"];
         }
@@ -607,23 +884,30 @@ export class CompetitionModel implements ICompetitionModel {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["id"] = this.id;
-        data["date"] = this.date ? this.date.toISOString() : <any>undefined;
+        data["date"] = this.date;
         data["name"] = this.name;
         data["city"] = this.city;
         return data; 
+    }
+
+    clone(): CompetitionModel {
+        const json = this.toJSON();
+        let result = new CompetitionModel();
+        result.init(json);
+        return result;
     }
 }
 
 export interface ICompetitionModel {
     id: number;
-    date?: Date | undefined;
+    date?: string | undefined;
     name?: string | undefined;
     city?: string | undefined;
 }
 
 export class DocumentModel implements IDocumentModel {
-    file_name?: string | undefined;
-    content_type?: string | undefined;
+    fileName?: string | undefined;
+    contentType?: string | undefined;
     content?: string | undefined;
 
     constructor(data?: IDocumentModel) {
@@ -637,8 +921,8 @@ export class DocumentModel implements IDocumentModel {
 
     init(data?: any) {
         if (data) {
-            this.file_name = data["file_name"];
-            this.content_type = data["content_type"];
+            this.fileName = data["fileName"];
+            this.contentType = data["contentType"];
             this.content = data["content"];
         }
     }
@@ -652,17 +936,71 @@ export class DocumentModel implements IDocumentModel {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["file_name"] = this.file_name;
-        data["content_type"] = this.content_type;
+        data["fileName"] = this.fileName;
+        data["contentType"] = this.contentType;
         data["content"] = this.content;
         return data; 
+    }
+
+    clone(): DocumentModel {
+        const json = this.toJSON();
+        let result = new DocumentModel();
+        result.init(json);
+        return result;
     }
 }
 
 export interface IDocumentModel {
-    file_name?: string | undefined;
-    content_type?: string | undefined;
+    fileName?: string | undefined;
+    contentType?: string | undefined;
     content?: string | undefined;
+}
+
+export class DocumentTypeModel implements IDocumentTypeModel {
+    id!: number;
+    name?: string | undefined;
+
+    constructor(data?: IDocumentTypeModel) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.id = data["id"];
+            this.name = data["name"];
+        }
+    }
+
+    static fromJS(data: any): DocumentTypeModel {
+        data = typeof data === 'object' ? data : {};
+        let result = new DocumentTypeModel();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["name"] = this.name;
+        return data; 
+    }
+
+    clone(): DocumentTypeModel {
+        const json = this.toJSON();
+        let result = new DocumentTypeModel();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IDocumentTypeModel {
+    id: number;
+    name?: string | undefined;
 }
 
 export class MemberGroupModel implements IMemberGroupModel {
@@ -698,6 +1036,13 @@ export class MemberGroupModel implements IMemberGroupModel {
         data["name"] = this.name;
         return data; 
     }
+
+    clone(): MemberGroupModel {
+        const json = this.toJSON();
+        let result = new MemberGroupModel();
+        result.init(json);
+        return result;
+    }
 }
 
 export interface IMemberGroupModel {
@@ -707,10 +1052,10 @@ export interface IMemberGroupModel {
 
 export class MemberModel implements IMemberModel {
     id!: number;
-    first_name?: string | undefined;
-    last_name?: string | undefined;
+    firstName?: string | undefined;
+    lastName?: string | undefined;
     image?: string | undefined;
-    member_group_id?: number | undefined;
+    memberGroupId?: number | undefined;
 
     constructor(data?: IMemberModel) {
         if (data) {
@@ -724,10 +1069,10 @@ export class MemberModel implements IMemberModel {
     init(data?: any) {
         if (data) {
             this.id = data["id"];
-            this.first_name = data["first_name"];
-            this.last_name = data["last_name"];
+            this.firstName = data["firstName"];
+            this.lastName = data["lastName"];
             this.image = data["image"];
-            this.member_group_id = data["member_group_id"];
+            this.memberGroupId = data["memberGroupId"];
         }
     }
 
@@ -741,40 +1086,48 @@ export class MemberModel implements IMemberModel {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["id"] = this.id;
-        data["first_name"] = this.first_name;
-        data["last_name"] = this.last_name;
+        data["firstName"] = this.firstName;
+        data["lastName"] = this.lastName;
         data["image"] = this.image;
-        data["member_group_id"] = this.member_group_id;
+        data["memberGroupId"] = this.memberGroupId;
         return data; 
+    }
+
+    clone(): MemberModel {
+        const json = this.toJSON();
+        let result = new MemberModel();
+        result.init(json);
+        return result;
     }
 }
 
 export interface IMemberModel {
     id: number;
-    first_name?: string | undefined;
-    last_name?: string | undefined;
+    firstName?: string | undefined;
+    lastName?: string | undefined;
     image?: string | undefined;
-    member_group_id?: number | undefined;
+    memberGroupId?: number | undefined;
 }
 
 export class MemberDetailsModel implements IMemberDetailsModel {
     id!: number;
-    first_name?: string | undefined;
-    last_name?: string | undefined;
+    firstName?: string | undefined;
+    lastName?: string | undefined;
     gender!: number;
-    date_of_birth!: Date;
-    joined_date?: Date | undefined;
+    dateOfBirth!: string;
+    joinedDate?: string | undefined;
     image?: string | undefined;
-    contact_address?: string | undefined;
-    contact_phone?: string | undefined;
-    father_id?: number | undefined;
-    mother_id?: number | undefined;
-    father_first_name?: string | undefined;
-    father_contact_phone?: string | undefined;
-    mother_first_name?: string | undefined;
-    mother_contact_phone?: string | undefined;
-    is_active!: boolean;
-    member_group_id?: number | undefined;
+    contactAddress?: string | undefined;
+    contactPhone?: string | undefined;
+    fatherId?: number | undefined;
+    motherId?: number | undefined;
+    fatherFirstName?: string | undefined;
+    fatherContactPhone?: string | undefined;
+    motherFirstName?: string | undefined;
+    motherContactPhone?: string | undefined;
+    isActive!: boolean;
+    memberGroupId?: number | undefined;
+    attendGymnastics!: boolean;
 
     constructor(data?: IMemberDetailsModel) {
         if (data) {
@@ -788,22 +1141,23 @@ export class MemberDetailsModel implements IMemberDetailsModel {
     init(data?: any) {
         if (data) {
             this.id = data["id"];
-            this.first_name = data["first_name"];
-            this.last_name = data["last_name"];
+            this.firstName = data["firstName"];
+            this.lastName = data["lastName"];
             this.gender = data["gender"];
-            this.date_of_birth = data["date_of_birth"] ? new Date(data["date_of_birth"].toString()) : <any>undefined;
-            this.joined_date = data["joined_date"] ? new Date(data["joined_date"].toString()) : <any>undefined;
+            this.dateOfBirth = data["dateOfBirth"];
+            this.joinedDate = data["joinedDate"];
             this.image = data["image"];
-            this.contact_address = data["contact_address"];
-            this.contact_phone = data["contact_phone"];
-            this.father_id = data["father_id"];
-            this.mother_id = data["mother_id"];
-            this.father_first_name = data["father_first_name"];
-            this.father_contact_phone = data["father_contact_phone"];
-            this.mother_first_name = data["mother_first_name"];
-            this.mother_contact_phone = data["mother_contact_phone"];
-            this.is_active = data["is_active"];
-            this.member_group_id = data["member_group_id"];
+            this.contactAddress = data["contactAddress"];
+            this.contactPhone = data["contactPhone"];
+            this.fatherId = data["fatherId"];
+            this.motherId = data["motherId"];
+            this.fatherFirstName = data["fatherFirstName"];
+            this.fatherContactPhone = data["fatherContactPhone"];
+            this.motherFirstName = data["motherFirstName"];
+            this.motherContactPhone = data["motherContactPhone"];
+            this.isActive = data["isActive"];
+            this.memberGroupId = data["memberGroupId"];
+            this.attendGymnastics = data["attendGymnastics"];
         }
     }
 
@@ -817,50 +1171,130 @@ export class MemberDetailsModel implements IMemberDetailsModel {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["id"] = this.id;
-        data["first_name"] = this.first_name;
-        data["last_name"] = this.last_name;
+        data["firstName"] = this.firstName;
+        data["lastName"] = this.lastName;
         data["gender"] = this.gender;
-        data["date_of_birth"] = this.date_of_birth ? this.date_of_birth.toISOString() : <any>undefined;
-        data["joined_date"] = this.joined_date ? this.joined_date.toISOString() : <any>undefined;
+        data["dateOfBirth"] = this.dateOfBirth;
+        data["joinedDate"] = this.joinedDate;
         data["image"] = this.image;
-        data["contact_address"] = this.contact_address;
-        data["contact_phone"] = this.contact_phone;
-        data["father_id"] = this.father_id;
-        data["mother_id"] = this.mother_id;
-        data["father_first_name"] = this.father_first_name;
-        data["father_contact_phone"] = this.father_contact_phone;
-        data["mother_first_name"] = this.mother_first_name;
-        data["mother_contact_phone"] = this.mother_contact_phone;
-        data["is_active"] = this.is_active;
-        data["member_group_id"] = this.member_group_id;
+        data["contactAddress"] = this.contactAddress;
+        data["contactPhone"] = this.contactPhone;
+        data["fatherId"] = this.fatherId;
+        data["motherId"] = this.motherId;
+        data["fatherFirstName"] = this.fatherFirstName;
+        data["fatherContactPhone"] = this.fatherContactPhone;
+        data["motherFirstName"] = this.motherFirstName;
+        data["motherContactPhone"] = this.motherContactPhone;
+        data["isActive"] = this.isActive;
+        data["memberGroupId"] = this.memberGroupId;
+        data["attendGymnastics"] = this.attendGymnastics;
         return data; 
+    }
+
+    clone(): MemberDetailsModel {
+        const json = this.toJSON();
+        let result = new MemberDetailsModel();
+        result.init(json);
+        return result;
     }
 }
 
 export interface IMemberDetailsModel {
     id: number;
-    first_name?: string | undefined;
-    last_name?: string | undefined;
+    firstName?: string | undefined;
+    lastName?: string | undefined;
     gender: number;
-    date_of_birth: Date;
-    joined_date?: Date | undefined;
+    dateOfBirth: string;
+    joinedDate?: string | undefined;
     image?: string | undefined;
-    contact_address?: string | undefined;
-    contact_phone?: string | undefined;
-    father_id?: number | undefined;
-    mother_id?: number | undefined;
-    father_first_name?: string | undefined;
-    father_contact_phone?: string | undefined;
-    mother_first_name?: string | undefined;
-    mother_contact_phone?: string | undefined;
-    is_active: boolean;
-    member_group_id?: number | undefined;
+    contactAddress?: string | undefined;
+    contactPhone?: string | undefined;
+    fatherId?: number | undefined;
+    motherId?: number | undefined;
+    fatherFirstName?: string | undefined;
+    fatherContactPhone?: string | undefined;
+    motherFirstName?: string | undefined;
+    motherContactPhone?: string | undefined;
+    isActive: boolean;
+    memberGroupId?: number | undefined;
+    attendGymnastics: boolean;
+}
+
+export class DocumentModel2 implements IDocumentModel2 {
+    fileName?: string | undefined;
+    contentType?: string | undefined;
+    memberId!: number;
+    documentType!: number;
+    id!: number;
+    typeName?: string | undefined;
+    content?: string | undefined;
+    expirationDate?: string | undefined;
+
+    constructor(data?: IDocumentModel2) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.fileName = data["fileName"];
+            this.contentType = data["contentType"];
+            this.memberId = data["memberId"];
+            this.documentType = data["documentType"];
+            this.id = data["id"];
+            this.typeName = data["typeName"];
+            this.content = data["content"];
+            this.expirationDate = data["expirationDate"];
+        }
+    }
+
+    static fromJS(data: any): DocumentModel2 {
+        data = typeof data === 'object' ? data : {};
+        let result = new DocumentModel2();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["fileName"] = this.fileName;
+        data["contentType"] = this.contentType;
+        data["memberId"] = this.memberId;
+        data["documentType"] = this.documentType;
+        data["id"] = this.id;
+        data["typeName"] = this.typeName;
+        data["content"] = this.content;
+        data["expirationDate"] = this.expirationDate;
+        return data; 
+    }
+
+    clone(): DocumentModel2 {
+        const json = this.toJSON();
+        let result = new DocumentModel2();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IDocumentModel2 {
+    fileName?: string | undefined;
+    contentType?: string | undefined;
+    memberId: number;
+    documentType: number;
+    id: number;
+    typeName?: string | undefined;
+    content?: string | undefined;
+    expirationDate?: string | undefined;
 }
 
 export class DocumentForUpload implements IDocumentForUpload {
-    member_id!: number;
-    document_type_id!: number;
-    date?: Date | undefined;
+    memberId!: number;
+    documentTypeId!: number;
+    date?: string | undefined;
     file?: any | undefined;
 
     constructor(data?: IDocumentForUpload) {
@@ -874,9 +1308,9 @@ export class DocumentForUpload implements IDocumentForUpload {
 
     init(data?: any) {
         if (data) {
-            this.member_id = data["member_id"];
-            this.document_type_id = data["document_type_id"];
-            this.date = data["date"] ? new Date(data["date"].toString()) : <any>undefined;
+            this.memberId = data["memberId"];
+            this.documentTypeId = data["documentTypeId"];
+            this.date = data["date"];
             this.file = data["file"];
         }
     }
@@ -890,32 +1324,36 @@ export class DocumentForUpload implements IDocumentForUpload {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["member_id"] = this.member_id;
-        data["document_type_id"] = this.document_type_id;
-        data["date"] = this.date ? this.date.toISOString() : <any>undefined;
+        data["memberId"] = this.memberId;
+        data["documentTypeId"] = this.documentTypeId;
+        data["date"] = this.date;
         data["file"] = this.file;
         return data; 
+    }
+
+    clone(): DocumentForUpload {
+        const json = this.toJSON();
+        let result = new DocumentForUpload();
+        result.init(json);
+        return result;
     }
 }
 
 export interface IDocumentForUpload {
-    member_id: number;
-    document_type_id: number;
-    date?: Date | undefined;
+    memberId: number;
+    documentTypeId: number;
+    date?: string | undefined;
     file?: any | undefined;
 }
 
-export class DocumentModel2 implements IDocumentModel2 {
-    file_name?: string | undefined;
-    content_type?: string | undefined;
-    member_id!: number;
-    document_type!: number;
+export class MembershipModel implements IMembershipModel {
     id!: number;
-    type_name?: string | undefined;
-    content?: string | undefined;
-    expiration_date?: Date | undefined;
+    date!: string;
+    memberId!: number;
+    amount!: number;
+    paidAmount!: number;
 
-    constructor(data?: IDocumentModel2) {
+    constructor(data?: IMembershipModel) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -926,59 +1364,113 @@ export class DocumentModel2 implements IDocumentModel2 {
 
     init(data?: any) {
         if (data) {
-            this.file_name = data["file_name"];
-            this.content_type = data["content_type"];
-            this.member_id = data["member_id"];
-            this.document_type = data["document_type"];
             this.id = data["id"];
-            this.type_name = data["type_name"];
-            this.content = data["content"];
-            this.expiration_date = data["expiration_date"] ? new Date(data["expiration_date"].toString()) : <any>undefined;
+            this.date = data["date"];
+            this.memberId = data["memberId"];
+            this.amount = data["amount"];
+            this.paidAmount = data["paidAmount"];
         }
     }
 
-    static fromJS(data: any): DocumentModel2 {
+    static fromJS(data: any): MembershipModel {
         data = typeof data === 'object' ? data : {};
-        let result = new DocumentModel2();
+        let result = new MembershipModel();
         result.init(data);
         return result;
     }
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["file_name"] = this.file_name;
-        data["content_type"] = this.content_type;
-        data["member_id"] = this.member_id;
-        data["document_type"] = this.document_type;
         data["id"] = this.id;
-        data["type_name"] = this.type_name;
-        data["content"] = this.content;
-        data["expiration_date"] = this.expiration_date ? this.expiration_date.toISOString() : <any>undefined;
+        data["date"] = this.date;
+        data["memberId"] = this.memberId;
+        data["amount"] = this.amount;
+        data["paidAmount"] = this.paidAmount;
         return data; 
+    }
+
+    clone(): MembershipModel {
+        const json = this.toJSON();
+        let result = new MembershipModel();
+        result.init(json);
+        return result;
     }
 }
 
-export interface IDocumentModel2 {
-    file_name?: string | undefined;
-    content_type?: string | undefined;
-    member_id: number;
-    document_type: number;
+export interface IMembershipModel {
     id: number;
-    type_name?: string | undefined;
-    content?: string | undefined;
-    expiration_date?: Date | undefined;
+    date: string;
+    memberId: number;
+    amount: number;
+    paidAmount: number;
+}
+
+export class PrizeModel implements IPrizeModel {
+    id!: number;
+    competitionId!: number;
+    competitionName?: string | undefined;
+    competitionDate?: string | undefined;
+    memberId!: number;
+    title?: string | undefined;
+
+    constructor(data?: IPrizeModel) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.id = data["id"];
+            this.competitionId = data["competitionId"];
+            this.competitionName = data["competitionName"];
+            this.competitionDate = data["competitionDate"];
+            this.memberId = data["memberId"];
+            this.title = data["title"];
+        }
+    }
+
+    static fromJS(data: any): PrizeModel {
+        data = typeof data === 'object' ? data : {};
+        let result = new PrizeModel();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["competitionId"] = this.competitionId;
+        data["competitionName"] = this.competitionName;
+        data["competitionDate"] = this.competitionDate;
+        data["memberId"] = this.memberId;
+        data["title"] = this.title;
+        return data; 
+    }
+
+    clone(): PrizeModel {
+        const json = this.toJSON();
+        let result = new PrizeModel();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IPrizeModel {
+    id: number;
+    competitionId: number;
+    competitionName?: string | undefined;
+    competitionDate?: string | undefined;
+    memberId: number;
+    title?: string | undefined;
 }
 
 export interface FileParameter {
     data: any;
     fileName: string;
-}
-
-export interface FileResponse {
-    data: Blob;
-    status: number;
-    fileName?: string;
-    headers?: { [name: string]: any };
 }
 
 export class SwaggerException extends Error {

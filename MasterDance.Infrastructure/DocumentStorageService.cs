@@ -6,12 +6,7 @@ namespace MasterDance.Infrastructure
 {
     public class DocumentStorageService : IDocumentStorageService
     {
-        public const string RootPath = "wwwroot/Documents";
-
-        protected string GetBasePath()
-        {
-            return $"{AppDomain.CurrentDomain.BaseDirectory}/{RootPath}";
-        }
+        public const string RootPath = "wwwroot";
 
         protected void CreateFolderIfNotExists(string path)
         {

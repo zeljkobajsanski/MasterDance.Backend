@@ -12,7 +12,8 @@ namespace MasterDance.Persistence.Configurations
             builder.Property(x => x.Amount).HasColumnType("money");
             builder.HasOne(x => x.Member).WithMany();
             builder.HasMany(x => x.Payments).WithOne(x => x.Membership);
-            builder.Property(x => x.Date).HasColumnType("datetime");
+            builder.Property(x => x.Date).HasColumnType("datetime").HasDefaultValueSql("GETDATE()");
+            builder.Property(x => x.Description).HasMaxLength(255);
         }
     }
 }

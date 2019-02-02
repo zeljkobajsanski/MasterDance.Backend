@@ -27,5 +27,16 @@ namespace MasterDance.Application.UseCases.Members.Models
                 TypeName = d.Type != null ? d.Type.Name : null
             };
         }
+
+        public static Expression<Func<Membership, MembershipModel>> ToModel()
+        {
+            return x => new MembershipModel()
+            {
+                Id = x.Id,
+                Date = x.Date,
+                Amount = x.Amount
+                //TODO: calculate paid amount
+            };
+        }
     }
 }

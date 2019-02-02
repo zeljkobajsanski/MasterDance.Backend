@@ -8,9 +8,9 @@ namespace MasterDance.WebUI.Controllers
     {
         [HttpPost("[action]")]
         [ProducesResponseType(typeof(bool), 200)]
-        public async Task<ActionResult> CalculateMemberships()
+        public async Task<ActionResult> CalculateMemberships([FromQuery]  int year, int month)
         {
-            await Mediator.Send(new CalculateMembershipCommand.Request());
+            await Mediator.Send(new CalculateMembershipCommand.Request(year, month));
             return Ok(true);
         }
     }

@@ -4,20 +4,24 @@ const path = require("path");
 module.exports = {
     outputDir: path.resolve(__dirname, "../MasterDance.WebUI/wwwroot"),
     configureWebpack: {
-        /* plugins: [
+         plugins: [
             new webpack.ProvidePlugin({
                 $: "jquery",
                 jQuery: "jquery"
             })
-        ], */
+        ],
     },
-    /* devServer: {
+     devServer: {
         proxy: {
             '/api': {
-                target: 'http://localhost:5000',
+                target: 'https://localhost:5001',
+                changeOrigin: true
+            },
+            '/Images': {
+                target: 'https://localhost:5001',
                 changeOrigin: true
             }
         }
-    } */
+    }
 
 };

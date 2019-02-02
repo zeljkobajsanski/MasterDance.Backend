@@ -9,7 +9,6 @@ namespace MasterDance.Domain.Entities
         public int MemberId { get; set; }
         public Competition Competition { get; set; }
         public int CompetitionId { get; set; }
-        [Required, StringLength(255)]
         public string Title { get; set; }
     }
 }

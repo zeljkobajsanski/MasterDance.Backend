@@ -9,6 +9,9 @@ namespace MasterDance.Domain.Entities
         public Member Member { get; set; }
         public int MemberId { get; set; }
         public decimal Amount { get; set; }
+        public int Year { get; set; }
+        public int Month { get; set; }
+        public string Description { get; set; }
         public DateTime Date { get; set; }
         public ICollection<Payment> Payments { get; private set; }
 
