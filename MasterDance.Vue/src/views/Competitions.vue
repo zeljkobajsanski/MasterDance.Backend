@@ -3,7 +3,7 @@
         <div class="col-md-8">
             <widget>
                 <div slot="actions">
-                    <i class="fa fa-refresh pointer" @click="getCompetitions"></i>
+                    <i class="fa fa-refresh pointer" @click="refresh()"></i>
                 </div>
                 <table class="table">
                     <thead>
@@ -16,7 +16,7 @@
                     <tbody>
                         <tr v-for="competition in competitions" @click="setModel(competition)">
                             <td>{{competition.name}}</td>
-                            <td>{{competition.date}}</td>
+                            <td>{{competition.date | date}}</td>
                             <td>{{competition.city}}</td>
                         </tr>
                     </tbody>
@@ -34,20 +34,21 @@
                         <label class="control-label col-sm-3">Naziv <span class="required">*</span></label>
                         <div class="col-sm-9">
                             <input class="form-control input-transparent" v-model="model.name"
-                                   v-validate.immediate="'required'" name="name">
+                                   v-validate="'required'" name="name">
                         </div>
                     </div>
-                    <div class="form-group row">
-                        <label class="control-label col-sm-3">Datum</label>
+                    <div class="form-group row" :class="{'has-error': errors.has('date')}">
+                        <label class="control-label col-sm-3">Datum <span class="required">*</span></label>
                         <div class="col-sm-9">
                             <date-picker class="date-picker form-control input-transparent" :config="dateConfig"
-                                         v-model="model.date"/>
+                                         v-model="model.date" v-validate="'required'" name="date"/>
                         </div>
                     </div>
-                    <div class="form-group row">
-                        <label class="control-label col-sm-3">Mesto</label>
+                    <div class="form-group row" :class="{'has-error': errors.has('city')}">
+                        <label class="control-label col-sm-3">Mesto <span class="required">*</span></label>
                         <div class="col-sm-9">
-                            <input class="form-control input-transparent" v-model="model.city">
+                            <input class="form-control input-transparent" v-model="model.city"
+                                   v-validate="'required'" name="city">
                         </div>
                     </div>
                     <div class="form-actions">
@@ -74,17 +75,15 @@
     import Widget from "@/components/common/Widget.vue";
     import notifications from '@/services/Notifications'
     import {CompetitionModel, CompetitionsProxy} from "@/services/BackendProxies";
+    import {convertStringToDateFormat} from "../utils";
+    import * as moment from 'moment'
 
     @Component({
         components: {Widget}
     })
     export default class Competitions extends Vue {
-        @State competitions;
-        @Action getCompetitions;
-        @Mutation setCompetitions;
-
-        model = new CompetitionModel();
-
+        model = {...new CompetitionModel()};
+        competitions: CompetitionModel[] = [];
         dateConfig = {
             format: 'DD.MM.YYYY'
         };
@@ -94,35 +93,50 @@
 
         created() {
             this.reset();
+            this.refresh();
         }
 
         reset() {
-            this.model = new CompetitionModel();
+            this.model = {...new CompetitionModel()};
         }
 
         setModel(competition) {
-            this.model = competition;
+            const model = competition.clone();
+            if (model.date) {
+                model.date = moment(model.date).toDate();
+            }
+            this.model = model;
         }
 
         async save() {
-            this.isSaving = true;
-            try {
-                const data = await this.competitionsProxy.saveCompetition(this.model);
-                this.model.id = data;
-                notifications.info('Podaci su uspesno sacuvani');
-                this.isSaving = false;
-                this.getCompetitions();
-            } catch (err) {
-                this.isSaving = false;
-                notifications.error('Greska prilikom snimanja podataka');
-            }
+            const competition = {...this.model};
+            this.$validator.validateAll().then(async (ok) => {
+                if (ok) {
+                    this.isSaving = true;
+                    try {
+                        competition.date = convertStringToDateFormat(this.model.date);
+                        const data = await this.competitionsProxy.saveCompetition(competition);
+                        this.model.id = data;
+                        notifications.info('Podaci su uspesno sacuvani');
+                        this.isSaving = false;
+                        this.refresh();
+                    } catch (err) {
+                        this.isSaving = false;
+                        notifications.error('Greska prilikom snimanja podataka');
+                    }
+                }
+            });
         }
 
         async removeCompetition() {
             const data = await this.competitionsProxy.deleteCompetition(this.model.id);
-            this.setCompetitions(data);
+            this.refresh();
             this.reset();
             notifications.info('Podaci su uspesno obrisani');
+        }
+
+        async refresh() {
+            this.competitions = await this.competitionsProxy.getCompetitions();
         }
     }
 </script>

@@ -18,11 +18,11 @@
 
   </ItemGroup>
 
-    <Target Name="NSwag" AfterTargets="Build" Condition="'$(Configuration)' == 'Debug'">
+    <!--<Target Name="NSwag" AfterTargets="Build" Condition="'$(Configuration)' == 'Debug'">
         <Copy SourceFiles="@(Reference)" DestinationFolder="$(OutDir)References" />
         <Exec Command="$(NSwagExe_Core22) run /variables:Configuration=$(Configuration)" />
         <RemoveDir Directories="$(OutDir)References" />
-    </Target>
+    </Target>-->
 
   <ItemGroup>
     <ProjectReference Include="..\MasterDance.Application\MasterDance.Application.csproj" />

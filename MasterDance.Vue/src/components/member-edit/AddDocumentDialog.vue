@@ -21,7 +21,6 @@
                     <input type="file" class="form-control" @change="onFileSelected($event.target.files)"/>
                 </div>
             </div>
-            {{document}}
         </form>
     </modal-dialog>
 </template>
@@ -32,18 +31,19 @@
 
     import moment from "moment";
     import {
-        DocumentForUpload,
         DocumentsProxy,
         DocumentTypeModel,
         DocumentTypesProxy, MemberModel,
         MembersProxy
     } from "@/services/BackendProxies";
+    import {convertStringToDateFormat} from "../../utils";
+    import {FileParameter} from "../../services/BackendProxies";
 
     @Component({components: {ModalDialog}})
     export default class AddDocumentDialog extends Vue {
         @Prop() member: MemberModel;
         documentTypes: DocumentTypeModel[] = [];
-        document = DocumentForUpload.fromJS({documentTypeId: 1});
+        document: {documentTypeId: number, date: string, file: FileParameter} = {documentTypeId: 1, date: null, file: null};
 
         dateConfig = {
             format: 'DD.MM.YYYY'
@@ -64,7 +64,7 @@
 
         onFileSelected(files: FileList) {
             if (files.length > 0) {
-                this.document.file = files[0];
+                this.document.file = {fileName: files[0].name, data: files[0]}
             }
         }
 
@@ -73,17 +73,8 @@
         }
 
         async saveDocument() {
-            /*const fd = new FormData();
-            fd.append('memberId', this.member.id);
-            fd.append('documentTypeId', this.documentTypeId);
-            if (this.date) {
-                fd.append('date', moment(this.date, this.dateConfig.format).format('YYYY-MM-DD'));
-            }
-            fd.append('file', this.file);*/
-            const document = this.document.clone();
-            document.memberId = this.member.id;
-
-            const data = await this.membersProxy.uploadDocument(this.member.id, document);
+            const data = await this.membersProxy.uploadDocument(
+                this.member.id, this.document.documentTypeId, convertStringToDateFormat(this.document.date), this.document.file, this.member.id);
             this.onSaved();
             (<ModalDialog>this.$refs['dialog']).close();
         }

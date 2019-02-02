@@ -28,7 +28,8 @@ namespace MasterDance.Persistence.Migrations
                     b.Property<string>("City")
                         .HasMaxLength(255);
 
-                    b.Property<DateTime?>("Date");
+                    b.Property<DateTime?>("Date")
+                        .HasColumnType("date");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -45,7 +46,8 @@ namespace MasterDance.Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<DateTime?>("ExpirationDate");
+                    b.Property<DateTime?>("ExpirationDate")
+                        .HasColumnType("date");
 
                     b.Property<int>("MemberId");
 
@@ -293,12 +295,11 @@ namespace MasterDance.Persistence.Migrations
                                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                             b1.Property<string>("Content")
-                                .IsRequired()
                                 .HasColumnName("Content");
 
                             b1.Property<string>("ContentType")
                                 .HasColumnName("ContentType")
-                                .HasMaxLength(32);
+                                .HasMaxLength(255);
 
                             b1.Property<string>("FileName")
                                 .HasColumnName("FileName")

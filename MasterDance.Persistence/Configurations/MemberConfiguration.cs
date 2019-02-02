@@ -8,7 +8,7 @@ namespace MasterDance.Persistence.Configurations
     public class MemberConfiguration 
     {
 
-        public static void OnModelCreating(ModelBuilder modelBuilder)
+        public static void Configure(ModelBuilder modelBuilder)
         {
             var builder = modelBuilder.Entity<Member>();
             builder.Property(x => x.DateOfBirth).HasColumnType("date");

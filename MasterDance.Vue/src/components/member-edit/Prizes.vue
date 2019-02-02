@@ -76,6 +76,7 @@
 
         async save() {
             try {
+                this.model.clone();
                 const data = await this.membersProxy.savePrize(this.memberId, this.model);
                 this.data = data;
                 (<ModalDialog>this.$refs.dialog).close();

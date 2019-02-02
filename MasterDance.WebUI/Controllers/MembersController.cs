@@ -56,12 +56,11 @@ namespace MasterDance.WebUI.Controllers
             return Ok(results);
         }
 
-        [HttpPost("{memberId}/documents")]
+        [HttpPost("[action]")]
         [ProducesResponseType(typeof(int), 200)]
         [ProducesResponseType(400)]
-        public async Task<ActionResult> UploadDocument(int memberId, [FromForm][SwaggerFile] DocumentForUpload document)
+        public async Task<ActionResult> UploadDocument([FromForm][SwaggerFile] DocumentForUpload document)
         {
-            document.File.ToBase64();
             var result = await Mediator.Send(new UploadDocumentCommand.Request(new DocumentModel()
             {
                 MemberId = document.MemberId,

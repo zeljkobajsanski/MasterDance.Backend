@@ -10,6 +10,7 @@ namespace MasterDance.Persistence.Configurations
         {
             builder.ToTable("Competitions");
             builder.Property(x => x.Name).IsRequired().HasMaxLength(255);
+            builder.Property(x => x.Date).HasColumnType("date");
             builder.Property(x => x.City).HasMaxLength(255);
         }
     }

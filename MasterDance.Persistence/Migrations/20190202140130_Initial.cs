@@ -14,7 +14,7 @@ namespace MasterDance.Persistence.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    Date = table.Column<DateTime>(nullable: true),
+                    Date = table.Column<DateTime>(type: "date", nullable: true),
                     Name = table.Column<string>(maxLength: 255, nullable: false),
                     City = table.Column<string>(maxLength: 255, nullable: true)
                 },
@@ -120,10 +120,10 @@ namespace MasterDance.Persistence.Migrations
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     MemberId = table.Column<int>(nullable: false),
                     TypeId = table.Column<int>(nullable: false),
-                    ExpirationDate = table.Column<DateTime>(nullable: true),
+                    ExpirationDate = table.Column<DateTime>(type: "date", nullable: true),
                     FileName = table.Column<string>(maxLength: 255, nullable: true),
-                    ContentType = table.Column<string>(maxLength: 32, nullable: true),
-                    Content = table.Column<string>(nullable: false)
+                    ContentType = table.Column<string>(maxLength: 255, nullable: true),
+                    Content = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -172,7 +172,10 @@ namespace MasterDance.Persistence.Migrations
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     MemberId = table.Column<int>(nullable: false),
                     Amount = table.Column<decimal>(type: "money", nullable: false),
-                    Date = table.Column<DateTime>(type: "datetime", nullable: false)
+                    Year = table.Column<int>(nullable: false),
+                    Month = table.Column<int>(nullable: false),
+                    Description = table.Column<string>(maxLength: 255, nullable: true),
+                    Date = table.Column<DateTime>(type: "datetime", nullable: false, defaultValueSql: "GETDATE()")
                 },
                 constraints: table =>
                 {
@@ -186,7 +189,7 @@ namespace MasterDance.Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Prize",
+                name: "Prizes",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
@@ -197,15 +200,15 @@ namespace MasterDance.Persistence.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Prize", x => x.Id);
+                    table.PrimaryKey("PK_Prizes", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Prize_Competitions_CompetitionId",
+                        name: "FK_Prizes_Competitions_CompetitionId",
                         column: x => x.CompetitionId,
                         principalTable: "Competitions",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Prize_Persons_MemberId",
+                        name: "FK_Prizes_Persons_MemberId",
                         column: x => x.MemberId,
                         principalTable: "Persons",
                         principalColumn: "Id",
@@ -264,13 +267,13 @@ namespace MasterDance.Persistence.Migrations
                 column: "MemberGroupId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Prize_CompetitionId",
-                table: "Prize",
+                name: "IX_Prizes_CompetitionId",
+                table: "Prizes",
                 column: "CompetitionId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Prize_MemberId",
-                table: "Prize",
+                name: "IX_Prizes_MemberId",
+                table: "Prizes",
                 column: "MemberId");
         }
 
@@ -286,7 +289,7 @@ namespace MasterDance.Persistence.Migrations
                 name: "Payments");
 
             migrationBuilder.DropTable(
-                name: "Prize");
+                name: "Prizes");
 
             migrationBuilder.DropTable(
                 name: "Settings");

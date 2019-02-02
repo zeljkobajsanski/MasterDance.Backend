@@ -26,8 +26,9 @@ namespace MasterDance.Persistence
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
-            MemberConfiguration.OnModelCreating(modelBuilder);
-            
+            MemberConfiguration.Configure(modelBuilder);
+            DocumentConfiguration.Configure(modelBuilder);
+
         }
     }
 }

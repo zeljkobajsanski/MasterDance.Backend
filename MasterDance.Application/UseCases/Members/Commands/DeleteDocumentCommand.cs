@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using MasterDance.Application.Exceptions;
 using MasterDance.Application.Infrastructure;
 using MasterDance.Application.UseCases.Members.Models;
+using MasterDance.Application.UseCases.Members.Queries;
 using MasterDance.Domain.Entities;
 using MasterDance.Persistence;
 using MediatR;
@@ -26,19 +27,19 @@ namespace MasterDance.Application.UseCases.Members.Commands
             }
         }
 
-        public class Handler : RequestHandlerBase<Request, ICollection<DocumentModel>> {
-            public Handler(MasterDanceDbContext dbContext) : base(dbContext)
+        public class Handler : RequestHandlerBase<Request, ICollection<DocumentModel>>
+        {
+            private readonly IMediator _mediator;
+            public Handler(MasterDanceDbContext dbContext, IMediator mediator) : base(dbContext)
             {
+                _mediator = mediator;
             }
 
             public override async Task<ICollection<DocumentModel>> Handle(Request request, CancellationToken cancellationToken)
             {
-                DbContext.Entry(new Document {Id = request.Id}).State = EntityState.Deleted;
-                await DbContext.SaveChangesAsync(cancellationToken);
+                await DbContext.Database.ExecuteSqlCommandAsync($"DELETE FROM Documents WHERE Id={request.Id}", cancellationToken);
 
-                return await DbContext.Documents.Where(x => x.MemberId == request.MemberId)
-                    .Select(Projections.ToDocumentModel())
-                    .ToArrayAsync(cancellationToken);
+                return await _mediator.Send(new GetDocumentsForMemberQuery.Request(request.MemberId), cancellationToken);
 
             }
         }

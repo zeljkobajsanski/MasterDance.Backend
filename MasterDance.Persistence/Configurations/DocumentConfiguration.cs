@@ -1,21 +1,22 @@
 ﻿using MasterDance.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
-
 namespace MasterDance.Persistence.Configurations
 {
-    public class DocumentConfiguration : IEntityTypeConfiguration<Document>
+    public static class DocumentConfiguration
     {
-        public void Configure(EntityTypeBuilder<Document> builder)
+        public static ModelBuilder Configure(ModelBuilder modelBuilder)
         {
-            builder.ToTable("Documents");
+            var builder = modelBuilder.Entity<Document>();
             builder.Property(x => x.Id).ValueGeneratedOnAdd();
-            builder.OwnsOne(x => x.Content, content =>
+            builder.Property(x => x.ExpirationDate).HasColumnType("date");
+            builder.OwnsOne(x => x.Content, c =>
             {
-                content.Property(p => p.Content).HasColumnName("Content");
-                content.Property(p => p.ContentType).HasColumnName("ContentType");
-                content.Property(p => p.FileName).HasColumnName("FileName");
+                c.Property(p => p.Content).HasColumnName("Content");
+                c.Property(p => p.ContentType).HasColumnName("ContentType").HasMaxLength(255);
+                c.Property(p => p.FileName).HasColumnName("FileName").HasMaxLength(255);
             });
+            
+            return modelBuilder;
         }
     }
 }

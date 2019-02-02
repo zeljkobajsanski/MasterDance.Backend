@@ -11,7 +11,7 @@ namespace MasterDance.Application.UseCases.Documents.Models
 
         public static DocumentModel ToModel(this Document document)
         {
-            return new DocumentModel() {FileName = document.Content?.FileName, Content = document.Content?.Content};
+            return new DocumentModel() {FileName = document.Content?.FileName, Content = document.Content?.Content, ContentType = document.Content?.ContentType};
         }
     }
 }

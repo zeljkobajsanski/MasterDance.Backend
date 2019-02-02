@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MasterDance.Persistence.Migrations
 {
     [DbContext(typeof(MasterDanceDbContext))]
-    [Migration("20190201201932_Initial")]
+    [Migration("20190202140130_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -30,7 +30,8 @@ namespace MasterDance.Persistence.Migrations
                     b.Property<string>("City")
                         .HasMaxLength(255);
 
-                    b.Property<DateTime?>("Date");
+                    b.Property<DateTime?>("Date")
+                        .HasColumnType("date");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -47,7 +48,8 @@ namespace MasterDance.Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<DateTime?>("ExpirationDate");
+                    b.Property<DateTime?>("ExpirationDate")
+                        .HasColumnType("date");
 
                     b.Property<int>("MemberId");
 
@@ -117,9 +119,18 @@ namespace MasterDance.Persistence.Migrations
                         .HasColumnType("money");
 
                     b.Property<DateTime>("Date")
-                        .HasColumnType("datetime");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime")
+                        .HasDefaultValueSql("GETDATE()");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(255);
 
                     b.Property<int>("MemberId");
+
+                    b.Property<int>("Month");
+
+                    b.Property<int>("Year");
 
                     b.HasKey("Id");
 
@@ -194,7 +205,7 @@ namespace MasterDance.Persistence.Migrations
 
                     b.HasIndex("MemberId");
 
-                    b.ToTable("Prize");
+                    b.ToTable("Prizes");
                 });
 
             modelBuilder.Entity("MasterDance.Domain.Entities.Settings", b =>
@@ -286,12 +297,11 @@ namespace MasterDance.Persistence.Migrations
                                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                             b1.Property<string>("Content")
-                                .IsRequired()
                                 .HasColumnName("Content");
 
                             b1.Property<string>("ContentType")
                                 .HasColumnName("ContentType")
-                                .HasMaxLength(32);
+                                .HasMaxLength(255);
 
                             b1.Property<string>("FileName")
                                 .HasColumnName("FileName")

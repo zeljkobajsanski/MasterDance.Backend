@@ -6,9 +6,6 @@
 //----------------------
 // ReSharper disable InconsistentNaming
 
-import {DocumentForUpload, MembersProxy} from "@/services/BackendProxies";
-import {toFormData} from "@/utils";
-
 export class CompetitionsProxy {
     private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
     private baseUrl: string;
@@ -57,7 +54,7 @@ export class CompetitionsProxy {
         return Promise.resolve<CompetitionModel[] | null>(<any>null);
     }
 
-    saveCompetition(competition: CompetitionModel | null): Promise<number> {
+    saveCompetition(competition: CompetitionModel): Promise<number> {
         let url_ = this.baseUrl + "/api/Competitions";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -147,11 +144,11 @@ export class DocumentsProxy {
         this.baseUrl = baseUrl ? baseUrl : "";
     }
 
-    getDocument(id: number): Promise<DocumentModel | null> {
+    getDocument(id: number | undefined): Promise<DocumentModel | null> {
         let url_ = this.baseUrl + "/api/Documents?";
-        if (id === undefined || id === null)
-            throw new Error("The parameter 'id' must be defined and cannot be null.");
-        else
+        if (id === null)
+            throw new Error("The parameter 'id' cannot be null.");
+        else if (id !== undefined)
             url_ += "id=" + encodeURIComponent("" + id) + "&"; 
         url_ = url_.replace(/[?&]$/, "");
 
@@ -283,7 +280,7 @@ export class MemberGroupsProxy {
         return Promise.resolve<MemberGroupModel[] | null>(<any>null);
     }
 
-    saveMemberGroup(model: MemberGroupModel | null): Promise<MemberGroupModel[] | null> {
+    saveMemberGroup(model: MemberGroupModel): Promise<MemberGroupModel[] | null> {
         let url_ = this.baseUrl + "/api/MemberGroups";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -415,7 +412,7 @@ export class MembersProxy {
         return Promise.resolve<MemberModel[] | null>(<any>null);
     }
 
-    saveMember(member: MemberDetailsModel | null): Promise<MemberDetailsModel | null> {
+    saveMember(member: MemberDetailsModel): Promise<MemberDetailsModel | null> {
         let url_ = this.baseUrl + "/api/Members";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -484,7 +481,10 @@ export class MembersProxy {
             });
         } else if (status === 404) {
             return response.text().then((_responseText) => {
-            return throwException("A server error occurred.", status, _responseText, _headers);
+            let result404: any = null;
+            let resultData404 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result404 = resultData404 ? ProblemDetails.fromJS(resultData404) : <any>null;
+            return throwException("A server error occurred.", status, _responseText, _headers, result404);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
@@ -535,16 +535,23 @@ export class MembersProxy {
         return Promise.resolve<DocumentModel2[] | null>(<any>null);
     }
 
-    uploadDocument(memberId: number, document: DocumentForUpload | null | undefined): Promise<number> {
-        let url_ = this.baseUrl + "/api/Members/{memberId}/documents";
-        if (memberId === undefined || memberId === null)
-            throw new Error("The parameter 'memberId' must be defined.");
-        url_ = url_.replace("{memberId}", encodeURIComponent("" + memberId)); 
+    uploadDocument(memberId: number | undefined, documentTypeId: number | undefined, date: string | null | undefined, file: FileParameter | null | undefined): Promise<number> {
+        let url_ = this.baseUrl + "/api/Members/UploadDocument";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = new FormData();
-        if (document !== null && document !== undefined)
-            content_.append("document", document.toString());
+        if (memberId === null || memberId === undefined)
+            throw new Error("The parameter 'memberId' cannot be null.");
+        else
+            content_.append("MemberId", memberId.toString());
+        if (documentTypeId === null || documentTypeId === undefined)
+            throw new Error("The parameter 'documentTypeId' cannot be null.");
+        else
+            content_.append("DocumentTypeId", documentTypeId.toString());
+        if (date !== null && date !== undefined)
+            content_.append("Date", date.toString());
+        if (file !== null && file !== undefined)
+            content_.append("File", file.data, file.fileName ? file.fileName : "File");
 
         let options_ = <RequestInit>{
             body: content_,
@@ -571,7 +578,10 @@ export class MembersProxy {
             });
         } else if (status === 400) {
             return response.text().then((_responseText) => {
-            return throwException("A server error occurred.", status, _responseText, _headers);
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result400 = resultData400 ? ProblemDetails.fromJS(resultData400) : <any>null;
+            return throwException("A server error occurred.", status, _responseText, _headers, result400);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
@@ -707,7 +717,7 @@ export class MembersProxy {
         return Promise.resolve<PrizeModel[] | null>(<any>null);
     }
 
-    savePrize(memberId: number, prize: PrizeModel | null): Promise<PrizeModel[] | null> {
+    savePrize(memberId: number, prize: PrizeModel): Promise<PrizeModel[] | null> {
         let url_ = this.baseUrl + "/api/Members/{memberId}/prizes";
         if (memberId === undefined || memberId === null)
             throw new Error("The parameter 'memberId' must be defined.");
@@ -807,15 +817,15 @@ export class MembershipsProxy {
         this.baseUrl = baseUrl ? baseUrl : "";
     }
 
-    calculateMemberships(year: number, month: number): Promise<boolean> {
+    calculateMemberships(year: number | undefined, month: number | undefined): Promise<boolean> {
         let url_ = this.baseUrl + "/api/Memberships/CalculateMemberships?";
-        if (year === undefined || year === null)
-            throw new Error("The parameter 'year' must be defined and cannot be null.");
-        else
+        if (year === null)
+            throw new Error("The parameter 'year' cannot be null.");
+        else if (year !== undefined)
             url_ += "year=" + encodeURIComponent("" + year) + "&"; 
-        if (month === undefined || month === null)
-            throw new Error("The parameter 'month' must be defined and cannot be null.");
-        else
+        if (month === null)
+            throw new Error("The parameter 'month' cannot be null.");
+        else if (month !== undefined)
             url_ += "month=" + encodeURIComponent("" + month) + "&"; 
         url_ = url_.replace(/[?&]$/, "");
 
@@ -1220,6 +1230,65 @@ export interface IMemberDetailsModel {
     attendGymnastics: boolean;
 }
 
+export class ProblemDetails implements IProblemDetails {
+    type?: string | undefined;
+    title?: string | undefined;
+    status?: number | undefined;
+    detail?: string | undefined;
+    instance?: string | undefined;
+
+    constructor(data?: IProblemDetails) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.type = data["type"];
+            this.title = data["title"];
+            this.status = data["status"];
+            this.detail = data["detail"];
+            this.instance = data["instance"];
+        }
+    }
+
+    static fromJS(data: any): ProblemDetails {
+        data = typeof data === 'object' ? data : {};
+        let result = new ProblemDetails();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["type"] = this.type;
+        data["title"] = this.title;
+        data["status"] = this.status;
+        data["detail"] = this.detail;
+        data["instance"] = this.instance;
+        return data; 
+    }
+
+    clone(): ProblemDetails {
+        const json = this.toJSON();
+        let result = new ProblemDetails();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IProblemDetails {
+    type?: string | undefined;
+    title?: string | undefined;
+    status?: number | undefined;
+    detail?: string | undefined;
+    instance?: string | undefined;
+}
+
 export class DocumentModel2 implements IDocumentModel2 {
     fileName?: string | undefined;
     contentType?: string | undefined;
@@ -1289,61 +1358,6 @@ export interface IDocumentModel2 {
     typeName?: string | undefined;
     content?: string | undefined;
     expirationDate?: string | undefined;
-}
-
-export class DocumentForUpload implements IDocumentForUpload {
-    memberId!: number;
-    documentTypeId!: number;
-    date?: string | undefined;
-    file?: any | undefined;
-
-    constructor(data?: IDocumentForUpload) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(data?: any) {
-        if (data) {
-            this.memberId = data["memberId"];
-            this.documentTypeId = data["documentTypeId"];
-            this.date = data["date"];
-            this.file = data["file"];
-        }
-    }
-
-    static fromJS(data: any): DocumentForUpload {
-        data = typeof data === 'object' ? data : {};
-        let result = new DocumentForUpload();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["memberId"] = this.memberId;
-        data["documentTypeId"] = this.documentTypeId;
-        data["date"] = this.date;
-        data["file"] = this.file;
-        return data; 
-    }
-
-    clone(): DocumentForUpload {
-        const json = this.toJSON();
-        let result = new DocumentForUpload();
-        result.init(json);
-        return result;
-    }
-}
-
-export interface IDocumentForUpload {
-    memberId: number;
-    documentTypeId: number;
-    date?: string | undefined;
-    file?: any | undefined;
 }
 
 export class MembershipModel implements IMembershipModel {

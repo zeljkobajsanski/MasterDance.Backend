@@ -18,7 +18,7 @@
                 <tbody>
                 <tr v-for="document in documentList" :key="document.id">
                     <td>{{document.typeName}}</td>
-                    <td>{{document.expirationDate || '-'}}</td>
+                    <td>{{document.expirationDate | date}}</td>
                     <td>
                         <div class="btn-group">
                             <button class="btn btn-xs btn-inverse" title="Pregledaj" @click="preview(document.id)"><i class="fa fa-search"></i> </button>
@@ -82,7 +82,7 @@
 
         async preview(documentId) {
             const data = await this.documentsProxy.getDocument(documentId);
-            this.previewDocumentUrl = data.content;
+            this.previewDocumentUrl = `data:${data.contentType};base64,${data.content}`;
             this.$nextTick(() => {
                 (<ModalDialog>this.$refs['documentPreview']).open();
             });
