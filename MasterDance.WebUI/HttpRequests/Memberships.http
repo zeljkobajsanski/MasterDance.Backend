@@ -1,7 +1,7 @@
 POST https://localhost:5001/api/Memberships/CalculateMemberships
 Content-Type: application/json
 
-{"year": 2018, "month": 12}
+{"year": 2018, "month": 11}
 ###
 
 GET https://localhost:5001/api/Memberships/GetDebtList

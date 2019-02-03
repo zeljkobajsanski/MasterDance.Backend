@@ -40,8 +40,9 @@ namespace MasterDance.WebUI
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             new WebHostBuilder()
-                .UseIIS()
-                //.UseContentRoot(Directory.GetCurrentDirectory())
+                .UseKestrel()
+                //.UseIIS()
+                .UseContentRoot(Directory.GetCurrentDirectory())
                 .ConfigureAppConfiguration((hostingContext, config) =>
                 {
                     var env = hostingContext.HostingEnvironment;

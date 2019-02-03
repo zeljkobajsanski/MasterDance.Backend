@@ -8,6 +8,7 @@ using MasterDance.WebUI.Filters;
 using FluentValidation.AspNetCore;
 using MasterDance.Application;
 using MasterDance.WebUI.Models;
+using MasterDance.WebUI.Security;
 using MediatR;
 using MediatR.Pipeline;
 using Microsoft.AspNetCore.Builder;
@@ -71,6 +72,9 @@ namespace MasterDance.WebUI
             services.AddInfrastructureModule();
             services.AddPersistenceModule(Configuration.GetConnectionString("Database"));
             services.AddApplicationModule();
+            
+            // Identity Server
+            services.AddSecurity();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -91,6 +95,7 @@ namespace MasterDance.WebUI
             app.UseSwagger();
             app.UseSwaggerUi3();
             app.UseFileServer();
+            app.UseIdentityServer();
             app.UseMvc();
         }
     }
