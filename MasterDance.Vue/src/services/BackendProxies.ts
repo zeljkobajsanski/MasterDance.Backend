@@ -975,6 +975,97 @@ export class MembershipsProxy {
         }
         return Promise.resolve<DebtModel[] | null>(<any>null);
     }
+
+    getMembershipsAndPayments(): Promise<MembershipsAndPayments[] | null> {
+        let url_ = this.baseUrl + "/api/Memberships";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ = <RequestInit>{
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetMembershipsAndPayments(_response);
+        });
+    }
+
+    protected processGetMembershipsAndPayments(response: Response): Promise<MembershipsAndPayments[] | null> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (resultData200 && resultData200.constructor === Array) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(MembershipsAndPayments.fromJS(item));
+            }
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<MembershipsAndPayments[] | null>(<any>null);
+    }
+}
+
+export class PaymentsProxy {
+    private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
+        this.http = http ? http : <any>window;
+        this.baseUrl = baseUrl ? baseUrl : "";
+    }
+
+    makePayment(payment: PaymentModel): Promise<MembershipModel[] | null> {
+        let url_ = this.baseUrl + "/api/Payments/MakePayment";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(payment);
+
+        let options_ = <RequestInit>{
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json", 
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processMakePayment(_response);
+        });
+    }
+
+    protected processMakePayment(response: Response): Promise<MembershipModel[] | null> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (resultData200 && resultData200.constructor === Array) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(MembershipModel.fromJS(item));
+            }
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<MembershipModel[] | null>(<any>null);
+    }
 }
 
 export class CompetitionModel implements ICompetitionModel {
@@ -1817,6 +1908,132 @@ export interface IDebtModel {
     memberId: number;
     member?: string | undefined;
     balance: number;
+}
+
+export class MembershipsAndPayments implements IMembershipsAndPayments {
+    id!: number;
+    member?: string | undefined;
+    description?: string | undefined;
+    memberId!: number;
+    year!: number;
+    month!: number;
+    amount!: number;
+    paidAmount!: number;
+    difference!: number;
+
+    constructor(data?: IMembershipsAndPayments) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.id = data["id"];
+            this.member = data["member"];
+            this.description = data["description"];
+            this.memberId = data["memberId"];
+            this.year = data["year"];
+            this.month = data["month"];
+            this.amount = data["amount"];
+            this.paidAmount = data["paidAmount"];
+            this.difference = data["difference"];
+        }
+    }
+
+    static fromJS(data: any): MembershipsAndPayments {
+        data = typeof data === 'object' ? data : {};
+        let result = new MembershipsAndPayments();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["member"] = this.member;
+        data["description"] = this.description;
+        data["memberId"] = this.memberId;
+        data["year"] = this.year;
+        data["month"] = this.month;
+        data["amount"] = this.amount;
+        data["paidAmount"] = this.paidAmount;
+        data["difference"] = this.difference;
+        return data; 
+    }
+
+    clone(): MembershipsAndPayments {
+        const json = this.toJSON();
+        let result = new MembershipsAndPayments();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IMembershipsAndPayments {
+    id: number;
+    member?: string | undefined;
+    description?: string | undefined;
+    memberId: number;
+    year: number;
+    month: number;
+    amount: number;
+    paidAmount: number;
+    difference: number;
+}
+
+export class PaymentModel implements IPaymentModel {
+    dateTime!: string;
+    amount!: number;
+    memberId!: number;
+
+    constructor(data?: IPaymentModel) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.dateTime = data["dateTime"];
+            this.amount = data["amount"];
+            this.memberId = data["memberId"];
+        }
+    }
+
+    static fromJS(data: any): PaymentModel {
+        data = typeof data === 'object' ? data : {};
+        let result = new PaymentModel();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["dateTime"] = this.dateTime;
+        data["amount"] = this.amount;
+        data["memberId"] = this.memberId;
+        return data; 
+    }
+
+    clone(): PaymentModel {
+        const json = this.toJSON();
+        let result = new PaymentModel();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IPaymentModel {
+    dateTime: string;
+    amount: number;
+    memberId: number;
 }
 
 export interface FileParameter {

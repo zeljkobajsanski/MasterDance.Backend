@@ -24,6 +24,7 @@ namespace MasterDance.Persistence
         public DbSet<Payment> Payments { get; set; }
         public DbSet<Prize> Prizes { get; set; }
         public DbQuery<GetDebtList> GetDebtList { get; set; }
+        public DbQuery<MembershipsAndPayments> MembershipsAndPayments { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

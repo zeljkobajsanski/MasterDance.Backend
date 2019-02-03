@@ -15,7 +15,7 @@
           <PrivateAssets>all</PrivateAssets>
       </PackageReference>
       <PackageReference Include="Serilog.Extensions.Logging.File" Version="1.1.0" />
-
+      <PackageReference Include="FluentValidation.AspNetCore" Version="8.1.3" />
   </ItemGroup>
 
     <!--<Target Name="NSwag" AfterTargets="Build" Condition="'$(Configuration)' == 'Debug'">
@@ -30,7 +30,6 @@
     <ProjectReference Include="..\MasterDance.Domain\MasterDance.Domain.csproj" />
     <ProjectReference Include="..\MasterDance.Infrastructure\MasterDance.Infrastructure.csproj" />
     <ProjectReference Include="..\MasterDance.Persistence\MasterDance.Persistence.csproj" />
-      <PackageReference Include="FluentValidation.AspNetCore" Version="8.1.3" />
   </ItemGroup>
 
   <ItemGroup>

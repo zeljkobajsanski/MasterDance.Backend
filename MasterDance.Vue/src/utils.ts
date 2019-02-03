@@ -1,12 +1,8 @@
-import * as moment from "moment";
+import * as numeral from 'numeral'
+
+declare const moment: any;
 
 export const convertStringToDateFormat = (date: string) => date ?
     moment(date, 'DD.MM.YYYY').format('YYYY-MM-DD') : null;
 
-export const toFormData = (data: object) => {
-    const form = new FormData();
-    for(let key in data) {
-        form.append(key, data[key]);
-    }
-    return form;
-};
+export const formatMoney = (value: number | undefined) => numeral(value || 0).format('0,0.00');

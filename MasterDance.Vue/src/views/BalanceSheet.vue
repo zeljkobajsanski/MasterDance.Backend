@@ -1,24 +1,7 @@
 <template>
     <widget>
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Ime clana</th>
-                    <th>Ukupno zaduzenje</th>
-                    <th>Ukupna uplata</th>
-                    <th>Stanje</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr v-for="i in data">
-                    <td>
-                        <router-link :to="{name: 'member-edit', params: {id: i.memberId}}">{{i.member}}</router-link>
-                    </td>
-                    <td>{{i.totalAmount | money}}</td>
-                    <td>{{i.totalPaid | money}}</td>
-                    <td :class="{'text-danger': i.balance < 0}">{{i.balance | money}}</td>
-                </tr>
-            </tbody>
+        <table class="table" v-table="tableOptions">
+
         </table>
     </widget>
 </template>
@@ -27,16 +10,31 @@
     import Vue from 'vue'
     import {Component, Prop, Watch} from "vue-property-decorator";
     import Widget from "@/components/common/Widget.vue";
+    import {IMembershipsAndPayments, MembershipsProxy} from "@/services/BackendProxies";
+    import {formatMoney} from "@/utils";
 
     @Component({
         components: {Widget}
     })
     export default class BalanceSheet extends Vue {
-        data = [];
+        tableOptions = {
+          columns: [
+              { field: 'member', title: 'Ime i prezime', formatter: (v, row) => `<a href="#/members/${row.memberId}/details">${row.member}</a>` },
+              { title: 'Mesec', formatter: (v, row) => `${row.month}/${row.year}` },
+              { field: 'description', title: 'Opis' },
+              { field: 'amount', title: 'Zaduzenje', formatter: (value) => formatMoney(value), align: 'right' },
+              { field: 'paidAmount', title: 'Uplata', formatter: (value) => formatMoney(value), align: 'right' },
+              { field: 'difference', title: 'Stanje', formatter: (value) => formatMoney(value), align: 'right' },
+          ],
+          data: [],
+            pagination: true,
+            search: true
+        };
+        private membershipsProxy = new MembershipsProxy();
 
         async created() {
-            /*const {data} = await api.getBalanceSheet(); //TODO: Implement balance sheet
-            this.data = data;*/
+            const data = await this.membershipsProxy.getMembershipsAndPayments();
+            this.tableOptions = {...this.tableOptions, data};
         }
     }
 </script>

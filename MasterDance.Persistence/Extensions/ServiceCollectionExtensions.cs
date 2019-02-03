@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using MasterDance.Persistence.Queries;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace MasterDance.Persistence.Extensions
@@ -10,6 +11,7 @@ namespace MasterDance.Persistence.Extensions
             // Add DbContext using SQL Server Provider
             serviceCollection.AddDbContext<MasterDanceDbContext>(options =>
                 options.UseSqlServer(connectionString));
+            serviceCollection.AddTransient<IDatabaseQueries, DatabaseQueries>();
             return serviceCollection;
         }
     }

@@ -2,11 +2,13 @@
 using System.Net;
 using System.Threading.Tasks;
 using MasterDance.Application.UseCases.Dashboard.Models;
-using MasterDance.Application.UseCases.Dashboard.Queries;
 using MasterDance.Application.UseCases.Memberships.Commands;
+using MasterDance.Application.UseCases.Memberships.Queries;
+using MasterDance.Persistence.QueryTypes;
 using Microsoft.AspNetCore.Mvc;
 using NSwag;
 using NSwag.Annotations;
+using GetDebtList = MasterDance.Application.UseCases.Dashboard.Queries.GetDebtList;
 
 namespace MasterDance.WebUI.Controllers
 {
@@ -25,6 +27,14 @@ namespace MasterDance.WebUI.Controllers
         public async Task<ActionResult> GetDebtList()
         {
             var result = await Mediator.Send(new GetDebtList.Request());
+            return Ok(result);
+        }
+
+        [HttpGet]
+        [SwaggerResponse(HttpStatusCode.OK, typeof(List<MembershipsAndPayments>))]
+        public async Task<ActionResult> GetMembershipsAndPayments()
+        {
+            var result = await Mediator.Send(new GetMembershipsQuery.Request());
             return Ok(result);
         }
     }

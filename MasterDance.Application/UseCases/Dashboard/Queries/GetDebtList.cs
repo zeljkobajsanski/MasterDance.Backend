@@ -21,7 +21,8 @@ namespace MasterDance.Application.UseCases.Dashboard.Queries
 
             public override async Task<ICollection<DebtModel>> Handle(Request request, CancellationToken cancellationToken)
             {
-                return (await DbContext.GetDebtList.FromSql("EXECUTE GetDebtList").ToArrayAsync(cancellationToken))
+                return (await DbContext.GetDebtList.FromSql("EXECUTE GetDebtList").Where(x => x.Debt > 0)
+                        .OrderByDescending(x => x.Diff).ToArrayAsync(cancellationToken))
                     .Select(x => new DebtModel()
                     {
                         MemberId = x.Id,

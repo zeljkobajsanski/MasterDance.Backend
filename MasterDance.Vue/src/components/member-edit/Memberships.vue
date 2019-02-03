@@ -31,7 +31,7 @@
                 <div class="form-group row">
                     <label class="control-label col-sm-3">Datum uplate</label>
                     <div class="col-sm-9">
-                        <date-picker :config="dateConfig" v-model="payment.date"></date-picker>
+                        <date-picker :config="dateConfig" v-model="payment.dateTime"></date-picker>
                     </div>
                 </div>
                 <div class="form-group row">
@@ -51,7 +51,10 @@
     import ModalDialog from "@/components/common/ModalDialog.vue";
     import DatePicker from "vue-bootstrap-datetimepicker/src/component.vue";
     import notifications from '@/services/Notifications'
-    import {MembersProxy} from "@/services/BackendProxies";
+    import {MembersProxy, PaymentModel, PaymentsProxy} from "@/services/BackendProxies";
+    //import * as moment from "moment";
+
+    declare const moment: any;
 
     @Component({
         components: {DatePicker, ModalDialog}
@@ -60,11 +63,12 @@
         data = [];
         @Prop() memberId: number;
         dateConfig = {
-            format: 'DD.MM.YYYY'
+            format: 'DD.MM.YYYY',
         };
-        payment = {};
+        payment = new PaymentModel();
 
         private membershipsProxy = new MembersProxy();
+        private paymentProxy = new PaymentsProxy();
 
         @Watch('memberId')
         async onMemberIdChanged(id) {
@@ -80,26 +84,16 @@
             return balance;
         }
 
-        addPayment(membership) {
-            this.payment = {membershipId: membership.id, date: new Date(), amount: membership.amount};
+        addPayment() {
+            this.payment = PaymentModel.fromJS({dateTime: moment().format('DD.MM.YYYY'), memberId: this.memberId});
             (<ModalDialog>this.$refs.dialog).open();
-        }
-
-        async removePayments(membership) {
-            try {
-                // const {data} = await api.removePayments(membership.id); //TODO: Payment
-                // this.data = data;
-            } catch(err) {
-                notifications.error('Neuspesno brisanje uplata');
-            }
-
         }
 
         async savePayment() {
             try {
-                //const {data} = await api.savePayment(this.payment); //TODO: Save payment
+                const data = await this.paymentProxy.makePayment(this.payment);
                 notifications.info('Uplata je usepsno evidentirana');
-                //this.data = data;
+                this.data = data;
                 (<ModalDialog>this.$refs.dialog).close();
             } catch(err) {
                 notifications.info('Greska prilikom evidentiranja uplate');

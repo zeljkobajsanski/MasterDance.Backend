@@ -1,0 +1,5 @@
+POST https://localhost:5001/api/Payments/MakePayment
+Content-Type: application/json
+
+{"memberId": 1, "amount": 3000, "dateTime": "2019-02-03"}
+###

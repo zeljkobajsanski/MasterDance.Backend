@@ -19,6 +19,7 @@
 
     <ItemGroup>
       <Folder Include="UseCases\Memberships\Queries\" />
+      <Folder Include="UseCases\Payments\Queries" />
     </ItemGroup>
 
 </Project>

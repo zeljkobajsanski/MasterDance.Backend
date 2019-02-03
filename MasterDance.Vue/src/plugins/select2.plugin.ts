@@ -13,7 +13,7 @@ const updateComponent = (el, binding) => {
         // v-model looks for
         //  - an event named "change"
         //  - a value with property path "$event.target.value"
-        el.dispatchEvent(new Event('change', { target: e.target }));
+        el.dispatchEvent(new Event('change', <EventInit>{ target: e.target }));
     });
 };
 
