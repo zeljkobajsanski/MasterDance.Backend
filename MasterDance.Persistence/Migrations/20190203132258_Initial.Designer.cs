@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MasterDance.Persistence.Migrations
 {
     [DbContext(typeof(MasterDanceDbContext))]
-    [Migration("20190202140130_Initial")]
+    [Migration("20190203132258_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -172,6 +172,13 @@ namespace MasterDance.Persistence.Migrations
 
                     b.Property<int>("Gender");
 
+                    b.Property<bool>("IsActive")
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValue(true);
+
+                    b.Property<string>("JMBG")
+                        .HasMaxLength(13);
+
                     b.Property<string>("LastName")
                         .HasMaxLength(128);
 
@@ -190,6 +197,12 @@ namespace MasterDance.Persistence.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Category")
+                        .HasMaxLength(255);
+
+                    b.Property<string>("Choreography")
+                        .HasMaxLength(255);
 
                     b.Property<int>("CompetitionId");
 
@@ -257,7 +270,7 @@ namespace MasterDance.Persistence.Migrations
 
                     b.Property<bool>("Dance")
                         .ValueGeneratedOnAdd()
-                        .HasDefaultValue(true);
+                        .HasDefaultValueSql("1");
 
                     b.Property<DateTime>("DateOfBirth")
                         .HasColumnType("date");
@@ -265,8 +278,6 @@ namespace MasterDance.Persistence.Migrations
                     b.Property<bool>("Gymnastics");
 
                     b.Property<string>("Image");
-
-                    b.Property<bool>("IsActive");
 
                     b.Property<DateTime?>("JoinedDate")
                         .HasColumnType("date");

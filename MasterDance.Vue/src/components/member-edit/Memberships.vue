@@ -52,9 +52,7 @@
     import DatePicker from "vue-bootstrap-datetimepicker/src/component.vue";
     import notifications from '@/services/Notifications'
     import {MembersProxy, PaymentModel, PaymentsProxy} from "@/services/BackendProxies";
-    //import * as moment from "moment";
-
-    declare const moment: any;
+    import moment from "moment";
 
     @Component({
         components: {DatePicker, ModalDialog}

@@ -88,6 +88,8 @@ namespace MasterDance.Persistence.Migrations
                     Email = table.Column<string>(maxLength: 255, nullable: true),
                     Phone = table.Column<string>(maxLength: 255, nullable: true),
                     Gender = table.Column<int>(nullable: false),
+                    IsActive = table.Column<bool>(nullable: false, defaultValue: true),
+                    JMBG = table.Column<string>(maxLength: 13, nullable: true),
                     MemberType = table.Column<string>(nullable: false),
                     Image = table.Column<string>(nullable: true),
                     DateOfBirth = table.Column<DateTime>(type: "date", nullable: true),
@@ -96,9 +98,8 @@ namespace MasterDance.Persistence.Migrations
                     FatherPhone = table.Column<string>(maxLength: 255, nullable: true),
                     Mother = table.Column<string>(maxLength: 255, nullable: true),
                     MotherPhone = table.Column<string>(maxLength: 255, nullable: true),
-                    IsActive = table.Column<bool>(nullable: true),
                     MemberGroupId = table.Column<int>(nullable: true),
-                    Dance = table.Column<bool>(nullable: true, defaultValue: true),
+                    Dance = table.Column<bool>(nullable: true, defaultValueSql: "1"),
                     Gymnastics = table.Column<bool>(nullable: true)
                 },
                 constraints: table =>
@@ -196,7 +197,9 @@ namespace MasterDance.Persistence.Migrations
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     MemberId = table.Column<int>(nullable: false),
                     CompetitionId = table.Column<int>(nullable: false),
-                    Title = table.Column<string>(maxLength: 255, nullable: false)
+                    Title = table.Column<string>(maxLength: 255, nullable: false),
+                    Category = table.Column<string>(maxLength: 255, nullable: true),
+                    Choreography = table.Column<string>(maxLength: 255, nullable: true)
                 },
                 constraints: table =>
                 {
