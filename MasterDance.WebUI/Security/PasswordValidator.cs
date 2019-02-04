@@ -1,14 +1,27 @@
 using System.Threading.Tasks;
 using IdentityServer4.Validation;
+using MasterDance.Persistence;
+using Microsoft.EntityFrameworkCore;
 
 namespace MasterDance.WebUI.Security
 {
     public class PasswordValidator : IResourceOwnerPasswordValidator
     {
-        public Task ValidateAsync(ResourceOwnerPasswordValidationContext context)
+        private readonly MasterDanceDbContext _context;
+
+        public PasswordValidator(MasterDanceDbContext context)
         {
-            context.Result = new GrantValidationResult("818727", "custom");
-            return Task.CompletedTask;
+            _context = context;
+        }
+
+        public async Task ValidateAsync(ResourceOwnerPasswordValidationContext context)
+        {
+            var user = await _context.Users.SingleAsync(x =>
+                x.Email == context.UserName && x.Password == context.Password && x.IsActive);
+            if (user != null)
+            {
+                context.Result = new GrantValidationResult(user.Id.ToString(), "custom");
+            }
         }
     }
 }

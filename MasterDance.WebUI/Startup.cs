@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Reflection;
 using MasterDance.Application.Infrastructure;
 using MasterDance.Infrastructure.Extensions;
 using MasterDance.Persistence;
@@ -14,7 +15,6 @@ using MediatR.Pipeline;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -23,12 +23,16 @@ namespace MasterDance.WebUI
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        private IHostingEnvironment _hostingEnvironment;
+        
+        public Startup(IConfiguration configuration, IHostingEnvironment hostingEnvironment)
         {
             Configuration = configuration;
+            _hostingEnvironment = hostingEnvironment;
         }
 
         public IConfiguration Configuration { get; }
+        
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -69,7 +73,7 @@ namespace MasterDance.WebUI
             });
 
             // Application modules
-            services.AddInfrastructureModule();
+            services.AddInfrastructureModule(_hostingEnvironment.WebRootPath);
             services.AddPersistenceModule(Configuration.GetConnectionString("Database"));
             services.AddApplicationModule();
             

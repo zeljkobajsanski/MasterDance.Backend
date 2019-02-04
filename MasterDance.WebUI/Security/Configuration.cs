@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Security.Claims;
 using IdentityServer4;
 using IdentityServer4.Models;
+using IdentityServer4.Services;
 using IdentityServer4.Validation;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
@@ -21,6 +22,7 @@ namespace MasterDance.WebUI.Security
                 .AddInMemoryClients(GetClients())
                 .AddDeveloperSigningCredential();
             serviceCollection.AddTransient<IResourceOwnerPasswordValidator, PasswordValidator>();
+            serviceCollection.AddTransient<IProfileService, ProfileService>();
             return serviceCollection;
         }
 
