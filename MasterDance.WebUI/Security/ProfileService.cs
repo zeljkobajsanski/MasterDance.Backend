@@ -19,13 +19,13 @@ namespace MasterDance.WebUI.Security
 
         public async Task GetProfileDataAsync(ProfileDataRequestContext context)
         {
-            var user = await _context.Users.FindAsync(context.Subject.GetSubjectId());
+            var user = await _context.Users.FindAsync(int.Parse(context.Subject.GetSubjectId()));
             context.IssuedClaims.Add(new Claim(ClaimTypes.Role, user.Role));
         }
 
         public async Task IsActiveAsync(IsActiveContext context)
         {
-            var user = await _context.Users.FindAsync(context.Subject.GetSubjectId());
+            var user = await _context.Users.FindAsync(int.Parse(context.Subject.GetSubjectId()));
             context.IsActive = true;
         }
     }

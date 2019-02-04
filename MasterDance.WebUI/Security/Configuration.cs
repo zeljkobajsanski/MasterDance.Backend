@@ -14,15 +14,26 @@ namespace MasterDance.WebUI.Security
         public static IServiceCollection AddSecurity(this IServiceCollection serviceCollection)
         {
             serviceCollection.AddIdentityServer(options =>
-                {
-                    
-                })
+                    {
+                    })
                 .AddInMemoryIdentityResources(GetIdentityResources())
                 .AddInMemoryApiResources(GetApiResources())
                 .AddInMemoryClients(GetClients())
                 .AddDeveloperSigningCredential();
             serviceCollection.AddTransient<IResourceOwnerPasswordValidator, PasswordValidator>();
             serviceCollection.AddTransient<IProfileService, ProfileService>();
+            serviceCollection.AddAuthentication("Bearer")
+                .AddJwtBearer("Bearer", options =>
+                {
+#if DEBUG
+                    options.Authority = "http://localhost:5000";
+#endif
+#if RELEASE
+                   options.Authority = "https://masterdance.bitseverywhere.rs";
+# endif
+                    options.RequireHttpsMetadata = false;
+                    options.Audience = "webapi";
+                });
             return serviceCollection;
         }
 
@@ -62,6 +73,8 @@ namespace MasterDance.WebUI.Security
                     {
                         new Secret("secret".Sha256())
                     },
+                    RefreshTokenExpiration = TokenExpiration.Sliding,
+                    SlidingRefreshTokenLifetime = 45 * 24 * 3600
                 }
             };
         }

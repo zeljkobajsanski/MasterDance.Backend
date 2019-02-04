@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using MasterDance.Application.Interfaces;
+using Microsoft.Extensions.Configuration;
 using SixLabors.ImageSharp;
 
 namespace MasterDance.Infrastructure
@@ -8,10 +9,11 @@ namespace MasterDance.Infrastructure
     public class ImageService : DocumentStorageService, IImageService
     {
         private readonly string _basePath;
+        
 
-        public ImageService()
+        public ImageService(IConfiguration configuration) : base(configuration)
         {
-            _basePath = $"{RootPath}/Images";
+            _basePath = $"{RootFolder}/Images";
             CreateFolderIfNotExists(_basePath);
         }
 

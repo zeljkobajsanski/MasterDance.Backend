@@ -23,12 +23,9 @@ namespace MasterDance.WebUI
 {
     public class Startup
     {
-        private IHostingEnvironment _hostingEnvironment;
-        
-        public Startup(IConfiguration configuration, IHostingEnvironment hostingEnvironment)
+        public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
-            _hostingEnvironment = hostingEnvironment;
         }
 
         public IConfiguration Configuration { get; }
@@ -73,7 +70,7 @@ namespace MasterDance.WebUI
             });
 
             // Application modules
-            services.AddInfrastructureModule(_hostingEnvironment.WebRootPath);
+            services.AddInfrastructureModule();
             services.AddPersistenceModule(Configuration.GetConnectionString("Database"));
             services.AddApplicationModule();
             
@@ -95,11 +92,14 @@ namespace MasterDance.WebUI
             }
             loggerFactory.AddFile(Configuration.GetSection("Logging"));
             app.UseGlobalErrorHandler(loggerFactory.CreateLogger("Default")); // <-- Global error handler
-            //app.UseHttpsRedirection();
+#if RELEASE
+            app.UseHttpsRedirection();
+#endif
             app.UseSwagger();
             app.UseSwaggerUi3();
             app.UseFileServer();
             app.UseIdentityServer();
+            app.UseAuthentication();
             app.UseMvc();
         }
     }

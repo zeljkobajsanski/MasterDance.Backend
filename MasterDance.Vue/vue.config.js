@@ -7,7 +7,8 @@ module.exports = {
          plugins: [
             new webpack.ProvidePlugin({
                 $: "jquery",
-                jQuery: "jquery"
+                jQuery: "jquery",
+                'window.jQuery': 'jquery'
             })
         ],
     },
@@ -20,7 +21,11 @@ module.exports = {
             '/Images': {
                 target: 'https://localhost:5001',
                 changeOrigin: true
-            }
+            },
+            '/connect': {
+                target: 'http://localhost:5000',
+                changeOrigin: true
+            },
         }
     }
 

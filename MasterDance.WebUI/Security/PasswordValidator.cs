@@ -16,7 +16,7 @@ namespace MasterDance.WebUI.Security
 
         public async Task ValidateAsync(ResourceOwnerPasswordValidationContext context)
         {
-            var user = await _context.Users.SingleAsync(x =>
+            var user = await _context.Users.SingleOrDefaultAsync(x =>
                 x.Email == context.UserName && x.Password == context.Password && x.IsActive);
             if (user != null)
             {

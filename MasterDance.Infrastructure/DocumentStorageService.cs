@@ -1,12 +1,18 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using MasterDance.Application.Interfaces;
+using Microsoft.Extensions.Configuration;
 
 namespace MasterDance.Infrastructure
 {
     public class DocumentStorageService : IDocumentStorageService
     {
-        public const string RootPath = "wwwroot";
+        protected string RootFolder;
+
+        public DocumentStorageService(IConfiguration configuration)
+        {
+            var rootFolder = configuration.GetSection("MasterDance")["WebRoot"];
+            RootFolder = rootFolder;
+        }
 
         protected void CreateFolderIfNotExists(string path)
         {

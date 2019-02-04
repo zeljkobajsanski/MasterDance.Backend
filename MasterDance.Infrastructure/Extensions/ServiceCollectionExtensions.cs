@@ -6,7 +6,7 @@ namespace MasterDance.Infrastructure.Extensions
 {
     public static class ServiceCollectionExtensions
     {
-        public static IServiceCollection AddInfrastructureModule(this IServiceCollection serviceCollection, string rootFolder)
+        public static IServiceCollection AddInfrastructureModule(this IServiceCollection serviceCollection)
         {
             serviceCollection.AddTransient<IDateTime, MachineDateTime>();
             serviceCollection.AddTransient<IImageService, ImageService>();
