@@ -83,6 +83,23 @@ namespace MasterDance.Persistence
                     { Id = Constants.TrainingTypes.Gymnastics, Name = "Gimnastika", Price = 200 });
                 context.SaveChanges();
             }
+
+            if (!context.Users.Any())
+            {
+                context.Users.Add(new User()
+                {
+                    Email = "zeljko.bajsanski@bitseverywhere.rs",
+                    Password = "passw0rd",
+                    IsActive = true,
+                    Role = "Administrator",
+                    Person = new Person()
+                    {
+                        FirstName = "Zeljko",
+                        LastName = "Bajsanski",
+                    }
+                });
+                context.SaveChanges();
+            }
         }
     }
 }

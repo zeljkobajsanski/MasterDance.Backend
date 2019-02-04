@@ -16,6 +16,11 @@ namespace MasterDance.WebUI.Security
 
         public async Task ValidateAsync(ResourceOwnerPasswordValidationContext context)
         {
+            if (context.UserName == "uuid")
+            {
+                context.Result = new GrantValidationResult("mobile", "custom");
+                return;
+            }
             var user = await _context.Users.SingleOrDefaultAsync(x =>
                 x.Email == context.UserName && x.Password == context.Password && x.IsActive);
             if (user != null)

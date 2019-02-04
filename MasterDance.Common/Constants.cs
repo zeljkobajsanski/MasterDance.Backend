@@ -12,5 +12,10 @@
             public const string Dance = "DAN";
             public const string Gymnastics = "GYM";
         }
+
+        public static class CustomClaims
+        {
+            public const string PersonId = "personId";
+        }
     }
 }

@@ -1,5 +1,12 @@
 POST http://localhost:5000/connect/token
 Content-Type: application/x-www-form-urlencoded
 
-grant_type=password&client_id=webapp&username=zeks&password=admin
+grant_type=password&client_id=webapp&username=zeljko.bajsanski@bitseverywhere.rs&password=j0v4n4
+###
+
+POST http://localhost:5000/connect/token
+Content-Type: application/x-www-form-urlencoded
+
+grant_type=password&client_id=mobileapp&username=uuid&password=j0v4n4
+
 ###

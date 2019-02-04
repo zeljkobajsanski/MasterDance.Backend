@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MasterDance.Persistence.Migrations
 {
     [DbContext(typeof(MasterDanceDbContext))]
-    [Migration("20190203132258_Initial")]
+    [Migration("20190204192522_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -148,12 +148,16 @@ namespace MasterDance.Persistence.Migrations
                     b.Property<decimal>("Amount")
                         .HasColumnType("money");
 
+                    b.Property<int>("CreatedId");
+
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime");
 
                     b.Property<int>("MembershipId");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CreatedId");
 
                     b.HasIndex("MembershipId");
 
@@ -255,6 +259,37 @@ namespace MasterDance.Persistence.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("TrainingTypes");
+                });
+
+            modelBuilder.Entity("MasterDance.Domain.Entities.User", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasMaxLength(255);
+
+                    b.Property<string>("IMEI")
+                        .HasMaxLength(255);
+
+                    b.Property<bool>("IsActive");
+
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasMaxLength(255);
+
+                    b.Property<int?>("PersonId");
+
+                    b.Property<string>("Role")
+                        .HasMaxLength(255);
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PersonId");
+
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("MasterDance.Domain.Entities.Coach", b =>
@@ -374,6 +409,11 @@ namespace MasterDance.Persistence.Migrations
 
             modelBuilder.Entity("MasterDance.Domain.Entities.Payment", b =>
                 {
+                    b.HasOne("MasterDance.Domain.Entities.Person", "Created")
+                        .WithMany()
+                        .HasForeignKey("CreatedId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
                     b.HasOne("MasterDance.Domain.Entities.Membership", "Membership")
                         .WithMany("Payments")
                         .HasForeignKey("MembershipId")
@@ -422,6 +462,13 @@ namespace MasterDance.Persistence.Migrations
                         .WithMany("Prizes")
                         .HasForeignKey("MemberId")
                         .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("MasterDance.Domain.Entities.User", b =>
+                {
+                    b.HasOne("MasterDance.Domain.Entities.Person", "Person")
+                        .WithMany()
+                        .HasForeignKey("PersonId");
                 });
 
             modelBuilder.Entity("MasterDance.Domain.Entities.Member", b =>

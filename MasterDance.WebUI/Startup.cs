@@ -46,6 +46,11 @@ namespace MasterDance.WebUI
                     fv.RunDefaultMvcValidationAfterFluentValidationExecutes = false;
                 }).AddJsonOptions(json => { json.SerializerSettings.DateFormatString = "dd.MM.yyyy"; });
 
+            // CORS
+            services.AddCors(options => options.AddPolicy("AllowAll", builder => 
+                builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader())
+            );
+            
             // Add MediatR
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(RequestPerformanceBehaviour<,>));
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(RequestValidationBehavior<,>));
@@ -95,6 +100,7 @@ namespace MasterDance.WebUI
 #if RELEASE
             app.UseHttpsRedirection();
 #endif
+            app.UseCors("AllowAll");
             app.UseSwagger();
             app.UseSwaggerUi3();
             app.UseFileServer();

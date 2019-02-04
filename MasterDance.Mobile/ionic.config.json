@@ -1,0 +1,7 @@
+{
+  "name": "MasterDance.Mobile",
+  "integrations": {
+    "cordova": {}
+  },
+  "type": "angular"
+}

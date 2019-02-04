@@ -9,5 +9,7 @@ namespace MasterDance.Domain.Entities
         public string IMEI { get; set; }
         public bool IsActive { get; set; }
         public string Role { get; set; }
+        public Person Person { get; set; }
+        public int? PersonId { get; set; }
     }
 }

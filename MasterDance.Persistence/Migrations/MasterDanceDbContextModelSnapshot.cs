@@ -146,12 +146,16 @@ namespace MasterDance.Persistence.Migrations
                     b.Property<decimal>("Amount")
                         .HasColumnType("money");
 
+                    b.Property<int>("CreatedId");
+
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime");
 
                     b.Property<int>("MembershipId");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CreatedId");
 
                     b.HasIndex("MembershipId");
 
@@ -274,10 +278,14 @@ namespace MasterDance.Persistence.Migrations
                         .IsRequired()
                         .HasMaxLength(255);
 
+                    b.Property<int?>("PersonId");
+
                     b.Property<string>("Role")
                         .HasMaxLength(255);
 
                     b.HasKey("Id");
+
+                    b.HasIndex("PersonId");
 
                     b.ToTable("Users");
                 });
@@ -399,6 +407,11 @@ namespace MasterDance.Persistence.Migrations
 
             modelBuilder.Entity("MasterDance.Domain.Entities.Payment", b =>
                 {
+                    b.HasOne("MasterDance.Domain.Entities.Person", "Created")
+                        .WithMany()
+                        .HasForeignKey("CreatedId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
                     b.HasOne("MasterDance.Domain.Entities.Membership", "Membership")
                         .WithMany("Payments")
                         .HasForeignKey("MembershipId")
@@ -447,6 +460,13 @@ namespace MasterDance.Persistence.Migrations
                         .WithMany("Prizes")
                         .HasForeignKey("MemberId")
                         .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("MasterDance.Domain.Entities.User", b =>
+                {
+                    b.HasOne("MasterDance.Domain.Entities.Person", "Person")
+                        .WithMany()
+                        .HasForeignKey("PersonId");
                 });
 
             modelBuilder.Entity("MasterDance.Domain.Entities.Member", b =>

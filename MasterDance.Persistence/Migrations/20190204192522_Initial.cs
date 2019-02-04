@@ -219,6 +219,30 @@ namespace MasterDance.Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Users",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Email = table.Column<string>(maxLength: 255, nullable: false),
+                    Password = table.Column<string>(maxLength: 255, nullable: false),
+                    IMEI = table.Column<string>(maxLength: 255, nullable: true),
+                    IsActive = table.Column<bool>(nullable: false),
+                    Role = table.Column<string>(maxLength: 255, nullable: true),
+                    PersonId = table.Column<int>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Users", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Users_Persons_PersonId",
+                        column: x => x.PersonId,
+                        principalTable: "Persons",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Payments",
                 columns: table => new
                 {
@@ -226,11 +250,18 @@ namespace MasterDance.Persistence.Migrations
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     MembershipId = table.Column<int>(nullable: false),
                     Date = table.Column<DateTime>(type: "datetime", nullable: false),
-                    Amount = table.Column<decimal>(type: "money", nullable: false)
+                    Amount = table.Column<decimal>(type: "money", nullable: false),
+                    CreatedId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Payments", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Payments_Persons_CreatedId",
+                        column: x => x.CreatedId,
+                        principalTable: "Persons",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Payments_Memberships_MembershipId",
                         column: x => x.MembershipId,
@@ -260,6 +291,11 @@ namespace MasterDance.Persistence.Migrations
                 column: "MemberId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Payments_CreatedId",
+                table: "Payments",
+                column: "CreatedId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Payments_MembershipId",
                 table: "Payments",
                 column: "MembershipId");
@@ -278,6 +314,11 @@ namespace MasterDance.Persistence.Migrations
                 name: "IX_Prizes_MemberId",
                 table: "Prizes",
                 column: "MemberId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Users_PersonId",
+                table: "Users",
+                column: "PersonId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -299,6 +340,9 @@ namespace MasterDance.Persistence.Migrations
 
             migrationBuilder.DropTable(
                 name: "TrainingTypes");
+
+            migrationBuilder.DropTable(
+                name: "Users");
 
             migrationBuilder.DropTable(
                 name: "DocumentTypes");

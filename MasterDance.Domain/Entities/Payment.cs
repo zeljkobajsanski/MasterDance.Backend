@@ -9,5 +9,7 @@ namespace MasterDance.Domain.Entities
         public int MembershipId { get; set; }
         public DateTime Date { get; set; }
         public decimal Amount { get; set; }
+        public Person Created { get; set; }
+        public int CreatedId { get; set; }
     }
 }
