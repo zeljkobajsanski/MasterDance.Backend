@@ -24,7 +24,7 @@ export class AppComponent {
     initializeApp() {
         this.platform.ready().then(() => {
             this.statusBar.styleDefault();
-            this.splashScreen.hide();
+
         });
         this.login();
     }
@@ -39,6 +39,7 @@ export class AppComponent {
             {headers: {'Content-Type': 'application/x-www-form-urlencoded'}}).subscribe(
           token => {
             console.log(token);
+              this.splashScreen.hide();
           },
             err => {
               console.error(err);

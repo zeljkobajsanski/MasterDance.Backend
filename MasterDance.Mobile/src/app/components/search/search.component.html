@@ -1,0 +1,22 @@
+<ion-content padding>
+    <form>
+        <ion-item>
+            <ion-input type="text" placeholder="Pretraga po imenu" [(ngModel)]="searchText" name="searchText"></ion-input>
+        </ion-item>
+        <ion-item>
+            <ion-select placeholder="ili po grupi" [(ngModel)]="selectedGroup" name="selectedGroup">
+                <ion-select-option *ngFor="let g of groups" [value]="g.id">{{g.name}}</ion-select-option>
+            </ion-select>
+        </ion-item>
+    </form>
+
+    <ion-list>
+        <ion-item *ngFor="let member of members | filter:searchText:selectedGroup" lines="none"
+                  (click)="select(member)">
+            <ion-avatar slot="start">
+                <ion-img [src]="member.image"></ion-img>
+            </ion-avatar>
+            <ion-label>{{member.firstName}} {{member.lastName}}</ion-label>
+        </ion-item>
+    </ion-list>
+</ion-content>

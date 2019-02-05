@@ -3,7 +3,47 @@
     <ion-title>
       Evidencija uplate
     </ion-title>
+      <ion-buttons slot="end">
+          <ion-button (click)="reset()">
+              <ion-icon slot="icon-only" name="close"></ion-icon>
+          </ion-button>
+          <ion-button (click)="confirm()">
+              <ion-icon slot="icon-only" name="checkmark"></ion-icon>
+          </ion-button>
+      </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
-<ion-content></ion-content>
+<ion-content>
+  <ion-card>
+      <ion-card-content>
+          <form>
+              <ion-item>
+                  <ion-label>Datum</ion-label>
+                  <ion-datetime displayFormat="DD.MM.YYYY" [(ngModel)]="payment.date" name="date"></ion-datetime>
+              </ion-item>
+              <ion-item>
+                  <ion-label>Iznos</ion-label>
+                  <ion-input type="number" class="ion-text-end" slot="end" clear-on-edit [(ngModel)]="payment.amount"
+                             required name="amount"></ion-input>
+              </ion-item>
+              <ion-item lines="none">
+                  <ion-label *ngIf="payment.member">{{payment.member.firstName}} {{payment.member.lastName}}</ion-label>
+                  <ion-button slot="end" (click)="search()">
+                      <ion-icon name="search"></ion-icon>
+                  </ion-button>
+              </ion-item>
+              <ion-item lines="none" *ngIf="showError">
+                  <ion-text color="danger">
+                      Popunite sve podatke
+                  </ion-text>
+              </ion-item>
+          </form>
+      </ion-card-content>
+  </ion-card>
+    <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+        <ion-fab-button color="success" (click)="confirm()">
+            <ion-icon name="checkmark"></ion-icon>
+        </ion-fab-button>
+    </ion-fab>
+</ion-content>

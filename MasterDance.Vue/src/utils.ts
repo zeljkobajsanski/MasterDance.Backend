@@ -1,6 +1,5 @@
 import * as numeral from 'numeral'
-
-declare const moment: any;
+import moment from 'moment'
 
 export const convertStringToDateFormat = (date: string) => date ?
     moment(date, 'DD.MM.YYYY').format('YYYY-MM-DD') : null;

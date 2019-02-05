@@ -4,6 +4,7 @@ using MasterDance.Domain.ValueObjects;
 using MasterDance.Persistence.Configurations;
 using MasterDance.Persistence.QueryTypes;
 using Microsoft.EntityFrameworkCore;
+using Evidence = MasterDance.Domain.Entities.Evidence;
 
 namespace MasterDance.Persistence
 {
@@ -26,6 +27,8 @@ namespace MasterDance.Persistence
         public DbQuery<GetDebtList> GetDebtList { get; set; }
         public DbQuery<MembershipsAndPayments> MembershipsAndPayments { get; set; }
         public DbSet<User> Users { get; set; }
+        public DbSet<Evidence> Evidences { get; set; }
+        public DbQuery<QueryTypes.Evidence> EvidencesQuery { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

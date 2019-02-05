@@ -77,6 +77,28 @@ namespace MasterDance.Persistence.Migrations
                     b.ToTable("DocumentTypes");
                 });
 
+            modelBuilder.Entity("MasterDance.Domain.Entities.Evidence", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("CoachId");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("date");
+
+                    b.Property<int>("MemberId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CoachId");
+
+                    b.HasIndex("MemberId");
+
+                    b.ToTable("Evidences");
+                });
+
             modelBuilder.Entity("MasterDance.Domain.Entities.Image", b =>
                 {
                     b.Property<int>("Id")
@@ -146,7 +168,7 @@ namespace MasterDance.Persistence.Migrations
                     b.Property<decimal>("Amount")
                         .HasColumnType("money");
 
-                    b.Property<int>("CreatedId");
+                    b.Property<int>("CreatorId");
 
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime");
@@ -155,7 +177,7 @@ namespace MasterDance.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CreatedId");
+                    b.HasIndex("CreatorId");
 
                     b.HasIndex("MembershipId");
 
@@ -362,6 +384,19 @@ namespace MasterDance.Persistence.Migrations
                         });
                 });
 
+            modelBuilder.Entity("MasterDance.Domain.Entities.Evidence", b =>
+                {
+                    b.HasOne("MasterDance.Domain.Entities.Coach", "Coach")
+                        .WithMany()
+                        .HasForeignKey("CoachId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("MasterDance.Domain.Entities.Member", "Member")
+                        .WithMany()
+                        .HasForeignKey("MemberId")
+                        .OnDelete(DeleteBehavior.Restrict);
+                });
+
             modelBuilder.Entity("MasterDance.Domain.Entities.Image", b =>
                 {
                     b.HasOne("MasterDance.Domain.Entities.Member", "Member")
@@ -407,9 +442,9 @@ namespace MasterDance.Persistence.Migrations
 
             modelBuilder.Entity("MasterDance.Domain.Entities.Payment", b =>
                 {
-                    b.HasOne("MasterDance.Domain.Entities.Person", "Created")
+                    b.HasOne("MasterDance.Domain.Entities.Person", "Creator")
                         .WithMany()
-                        .HasForeignKey("CreatedId")
+                        .HasForeignKey("CreatorId")
                         .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("MasterDance.Domain.Entities.Membership", "Membership")

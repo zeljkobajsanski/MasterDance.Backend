@@ -19,7 +19,7 @@ namespace MasterDance.Application.UseCases.Payments.Commands
     {
         public class Request : IRequest<ICollection<MembershipModel>>
         {
-            public int Created { get; set; }
+            public int Creator { get; set; }
             public PaymentModel Payment { get; set; }
         }
         
@@ -49,7 +49,7 @@ namespace MasterDance.Application.UseCases.Payments.Commands
                         MembershipId = item.Id,
                         Amount = amountToPay,
                         Date = request.Payment.DateTime,
-                        CreatedId = request.Created
+                        CreatorId = request.Creator
                     }, cancellationToken);
                     amount -= amountToPay;
                 }

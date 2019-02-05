@@ -16,26 +16,28 @@
 
 <ion-content>
 
-  <ion-item>
+<!--  <ion-item>
     <ion-label>Datum</ion-label>
     <ion-datetime display-format="DD.MM.YYYY" [(ngModel)]="date"></ion-datetime>
-  </ion-item>
+  </ion-item>-->
+  <ion-list>
+    <ion-item>
+      <ion-label>Grupa</ion-label>
+      <ion-select okText="Potvrdi" cancelText="Otkazi" [(ngModel)]="group">
+        <ion-select-option [value]="g.id" *ngFor="let g of groups" >{{g.name}}</ion-select-option>
+      </ion-select>
+    </ion-item>
+  </ion-list>
 
-  <ion-item>
-    <ion-label>Grupa</ion-label>
-    <ion-select okText="Potvrdi" cancelText="Otkazi" [(ngModel)]="group">
-      <ion-select-option [value]="g.id" *ngFor="let g of groups">{{g.name}}</ion-select-option>
-    </ion-select>
-  </ion-item>
 
   <ion-list *ngIf="members.length" lines="none">
     <!--<ion-list-header>
       <ion-label>Članovi</ion-label>
     </ion-list-header>-->
     <ion-item *ngFor="let member of members">
-      <ion-thumbnail slot="start">
-        <img [src]="'http://localhost:5000/' + member.image">
-      </ion-thumbnail>
+      <ion-avatar slot="start">
+        <img [src]="member.image">
+      </ion-avatar>
       <ion-label>{{member.name}}</ion-label>
       <ion-checkbox slot="end" [(ngModel)]="member.isSelected"></ion-checkbox>
     </ion-item>

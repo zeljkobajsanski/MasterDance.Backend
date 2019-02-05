@@ -53,6 +53,25 @@ namespace MasterDance.Persistence
                     WHERE (@MemberId IS NULL OR PE.Id=@MemberId)
                 END
                 ");
+
+            context.Database.ExecuteSqlCommand(@"
+                IF EXISTS (SELECT * FROM sys.objects WHERE type = 'P' AND name = 'GetEvidence')
+                BEGIN
+                  DROP PROCEDURE GetEvidence
+                END
+            ");
+            context.Database.ExecuteSqlCommand(@"
+                CREATE PROCEDURE GetEvidence (@Date date, @CoachId int, @MemberGroupId int = NULL)
+                AS
+                BEGIN
+                    SELECT E.Id EvidenceId, P.Id MemberId, CONCAT(P.FirstName, ' ', P.LastName) MemberName, P.Image, CAST(CASE WHEN E.Id IS NULL THEN 0 ELSE 1 END AS BIT) IsSelected
+                    FROM Persons P
+                        LEFT JOIN Evidences E
+                            ON E.MemberId = P.Id
+                    WHERE P.MemberType='Member' AND (E.Date IS NULL OR E.Date = @Date) AND 
+                         (E.CoachId IS NULL OR E.CoachId = @CoachId) AND (@MemberGroupId IS NULL OR P.MemberGroupId = @MemberGroupId)
+                END
+                ");
         }
 
         public void SeedEverything(MasterDanceDbContext context)

@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
 import {HttpClient} from '@angular/common/http';
+import {ToastController} from '@ionic/angular';
+import {environment} from '../../environments/environment';
 
 @Component({
     selector: 'app-tab1',
@@ -32,10 +34,10 @@ export class Tab1Page {
     private _group;
 
 
-    constructor(private http: HttpClient) {
+    constructor(private http: HttpClient, private toasts: ToastController) {
         this.date = new Date().toISOString();
 
-        this.http.get<any[]>('http://localhost:5000/api/mobile/GetMemberGroups').subscribe(
+        this.http.get<any[]>(`${environment.webapi}/api/mobile/GetMemberGroups`).subscribe(
             data => {
                 this.groups = data;
             }
@@ -43,21 +45,40 @@ export class Tab1Page {
     }
 
     load() {
-        if (this.date && this.group) {
-            this.http.get<any[]>(`http://localhost:5000/api/mobile/GetMembers?groupId=${this.group}`).subscribe(
-                data => this.members = data
+        if (this.group) {
+            this.http.get<any[]>(`${environment.webapi}/api/mobile/GetEvidence?groupId=${this.group}`).subscribe(
+                data => {
+                    this.members = data.map(m => ({...m, image: `${m.image ? environment.webapi + m.image : '/assets/img/2.png'}`}));
+                }
             );
         }
     }
 
     confirm() {
-        this.http.post<any[]>(`http://localhost:5000/api/mobile/SaveEvidence`, this.members).subscribe(
-            data => {}
+        this.http.post<any[]>(`${environment.webapi}/api/mobile/SaveEvidence`, {members: this.members}).subscribe(
+            async (data) => {
+                const toast = await this.toasts.create({
+                    message: 'Podaci su uspešno sačuvani',
+                    duration: 2000,
+                    position: 'top',
+                    color: 'success'});
+                toast.present();
+                this.load();
+            },
+            async (err) => {
+                const toast = await this.toasts.create({
+                    message: 'Greška prilikom snimanja podataka',
+                    position: 'top',
+                    color: 'danger',
+                    showCloseButton: true
+                });
+                toast.present();
+            }
         );
     }
 
     reset() {
-        this.date = new Date().toISOString();
+        // this.date = new Date().toISOString();
         this.group = null;
         this.members = [];
     }

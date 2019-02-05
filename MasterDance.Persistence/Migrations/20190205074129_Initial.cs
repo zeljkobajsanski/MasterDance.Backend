@@ -144,6 +144,33 @@ namespace MasterDance.Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Evidences",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Date = table.Column<DateTime>(type: "date", nullable: false),
+                    MemberId = table.Column<int>(nullable: false),
+                    CoachId = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Evidences", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Evidences_Persons_CoachId",
+                        column: x => x.CoachId,
+                        principalTable: "Persons",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Evidences_Persons_MemberId",
+                        column: x => x.MemberId,
+                        principalTable: "Persons",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "MemberImages",
                 columns: table => new
                 {
@@ -251,14 +278,14 @@ namespace MasterDance.Persistence.Migrations
                     MembershipId = table.Column<int>(nullable: false),
                     Date = table.Column<DateTime>(type: "datetime", nullable: false),
                     Amount = table.Column<decimal>(type: "money", nullable: false),
-                    CreatedId = table.Column<int>(nullable: false)
+                    CreatorId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Payments", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Payments_Persons_CreatedId",
-                        column: x => x.CreatedId,
+                        name: "FK_Payments_Persons_CreatorId",
+                        column: x => x.CreatorId,
                         principalTable: "Persons",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
@@ -281,6 +308,16 @@ namespace MasterDance.Persistence.Migrations
                 column: "TypeId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Evidences_CoachId",
+                table: "Evidences",
+                column: "CoachId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Evidences_MemberId",
+                table: "Evidences",
+                column: "MemberId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_MemberImages_MemberId",
                 table: "MemberImages",
                 column: "MemberId");
@@ -291,9 +328,9 @@ namespace MasterDance.Persistence.Migrations
                 column: "MemberId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Payments_CreatedId",
+                name: "IX_Payments_CreatorId",
                 table: "Payments",
-                column: "CreatedId");
+                column: "CreatorId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Payments_MembershipId",
@@ -325,6 +362,9 @@ namespace MasterDance.Persistence.Migrations
         {
             migrationBuilder.DropTable(
                 name: "Documents");
+
+            migrationBuilder.DropTable(
+                name: "Evidences");
 
             migrationBuilder.DropTable(
                 name: "MemberImages");

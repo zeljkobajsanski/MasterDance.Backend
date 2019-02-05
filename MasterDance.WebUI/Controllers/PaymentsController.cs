@@ -15,7 +15,7 @@ namespace MasterDance.WebUI.Controllers
         [SwaggerResponse(HttpStatusCode.OK, typeof(ICollection<MembershipModel>))]
         public async Task<ActionResult> MakePayment([FromBody] PaymentModel payment)
         {
-            var result = await Mediator.Send(new AddPaymentCommand.Request(){Payment = payment, Created = GetUserId()});
+            var result = await Mediator.Send(new AddPaymentCommand.Request(){Payment = payment, Creator = GetUserId()});
             return Ok(result);
         }
     }
