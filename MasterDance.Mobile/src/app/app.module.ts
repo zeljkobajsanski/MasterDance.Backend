@@ -13,10 +13,11 @@ import { Device } from '@ionic-native/device/ngx';
 import { SearchComponent } from './components/search/search.component';
 import {FilterPipe} from './components/search/filter.pipe';
 import {FormsModule} from '@angular/forms';
+import { LoginFailedComponent } from './components/login-failed/login-failed.component';
 
 @NgModule({
-  declarations: [AppComponent, SearchComponent, FilterPipe],
-  entryComponents: [SearchComponent],
+  declarations: [AppComponent, SearchComponent, FilterPipe, LoginFailedComponent],
+  entryComponents: [SearchComponent, LoginFailedComponent],
   imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule, HttpClientModule, FormsModule],
   providers: [
     StatusBar,

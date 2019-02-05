@@ -1,10 +1,11 @@
 import { Component } from '@angular/core';
 
-import { Platform } from '@ionic/angular';
+import {ModalController, Platform} from '@ionic/angular';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 import {HttpClient, HttpParams} from '@angular/common/http';
 import { Device } from '@ionic-native/device/ngx';
+import {LoginFailedComponent} from './components/login-failed/login-failed.component';
 
 @Component({
     selector: 'app-root',
@@ -16,7 +17,8 @@ export class AppComponent {
         private splashScreen: SplashScreen,
         private statusBar: StatusBar,
         private http: HttpClient,
-        private device: Device
+        private device: Device,
+        private modalController: ModalController
     ) {
         this.initializeApp();
     }
@@ -30,19 +32,20 @@ export class AppComponent {
     }
 
     login() {
+        const uuid = this.device.uuid || '{CF531BC7-5FD1-4012-9E0E-5ABD12F86877}';
         const payload = new HttpParams()
             .set('grant_type', 'password')
             .set('client_id', 'mobileapp')
             .set('username', 'uuid')
-            .set('password', this.device.uuid);
+            .set('password', uuid);
         this.http.post('http://localhost:5000/connect/token', payload,
             {headers: {'Content-Type': 'application/x-www-form-urlencoded'}}).subscribe(
           token => {
-            console.log(token);
               this.splashScreen.hide();
           },
-            err => {
-              console.error(err);
+            async err => {
+              const modal = await this.modalController.create({component: LoginFailedComponent, componentProps: {uuid}});
+              await modal.present();
             }
         );
     }

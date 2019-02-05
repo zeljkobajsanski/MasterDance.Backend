@@ -36,7 +36,7 @@ namespace MasterDance.Application.UseCases.Mobile.Commands
                 request.Model.Date = _dateTime.Now;
 
                 // New
-                await DbContext.Evidences.AddRangeAsync(request.Model.Members.Where(x => !x.EvidenceId.HasValue).Select(x =>
+                await DbContext.Evidences.AddRangeAsync(request.Model.Members.Where(x => !x.EvidenceId.HasValue && x.IsSelected).Select(x =>
                     new Evidence()
                     {
                         CoachId = request.Model.CoachId,

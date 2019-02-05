@@ -288,21 +288,19 @@ namespace MasterDance.Persistence.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Email")
-                        .IsRequired()
-                        .HasMaxLength(255);
-
-                    b.Property<string>("IMEI")
                         .HasMaxLength(255);
 
                     b.Property<bool>("IsActive");
 
                     b.Property<string>("Password")
-                        .IsRequired()
                         .HasMaxLength(255);
 
                     b.Property<int?>("PersonId");
 
                     b.Property<string>("Role")
+                        .HasMaxLength(255);
+
+                    b.Property<string>("UUID")
                         .HasMaxLength(255);
 
                     b.HasKey("Id");

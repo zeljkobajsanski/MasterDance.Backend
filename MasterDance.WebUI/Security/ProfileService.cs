@@ -23,22 +23,30 @@ namespace MasterDance.WebUI.Security
         {
             if (context.Client.ClientId == "mobileapp")
             {
-                return;
+                var user = await _context.Users.SingleAsync(x => x.Id == int.Parse(context.Subject.GetSubjectId()));
+                context.IssuedClaims.Add(new Claim(ClaimTypes.Role, "MobileUser"));
+                context.IssuedClaims.Add(new Claim(Constants.CustomClaims.PersonId, user.PersonId.ToString()));
             }
-            var user = await _context.Users.SingleAsync(x => x.Id == int.Parse(context.Subject.GetSubjectId()));
-            context.IssuedClaims.Add(new Claim(ClaimTypes.Role, user.Role));
-            context.IssuedClaims.Add(new Claim(Constants.CustomClaims.PersonId, user.PersonId.ToString()));
+            else
+            {
+                var user = await _context.Users.SingleAsync(x => x.Id == int.Parse(context.Subject.GetSubjectId()));
+                context.IssuedClaims.Add(new Claim(ClaimTypes.Role, user.Role));
+                context.IssuedClaims.Add(new Claim(Constants.CustomClaims.PersonId, user.PersonId.ToString()));
+            }
         }
 
         public async Task IsActiveAsync(IsActiveContext context)
         {
             if (context.Client.ClientId == "mobileapp")
             {
-                context.IsActive = true;
-                return;
+                var user = await _context.Users.SingleAsync(x => x.Id == int.Parse(context.Subject.GetSubjectId()));
+                context.IsActive = user.IsActive;
             }
-            var user = await _context.Users.FindAsync(int.Parse(context.Subject.GetSubjectId()));
-            context.IsActive = user.IsActive;
+            else
+            {
+                var user = await _context.Users.FindAsync(int.Parse(context.Subject.GetSubjectId()));
+                context.IsActive = user.IsActive;
+            }
         }
     }
 }

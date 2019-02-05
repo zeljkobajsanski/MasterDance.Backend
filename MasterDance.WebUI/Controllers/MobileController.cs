@@ -59,5 +59,12 @@ namespace MasterDance.WebUI.Controllers
             var result = await Mediator.Send(new AddPaymentCommand.Request() { Payment = payment, Creator = GetUserId() });
             return Ok(result);
         }
+
+        [HttpPost]
+        public async Task<ActionResult> RegisterDevice([FromBody] RegisterDeviceCommand.Request request)
+        {
+            await Mediator.Send(request);
+            return Ok(true);
+        }
     }
 }

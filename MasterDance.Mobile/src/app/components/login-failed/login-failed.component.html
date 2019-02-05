@@ -1,0 +1,18 @@
+<ion-content padding>
+  <ion-text color="danger" class="ion-text-center">
+      <h3>Neuspešna prijava na sistem</h3>
+  </ion-text>
+    <ion-text class="ion-text-center">
+        <p>Proverite da li je Vaš uređaj registrovan ili Internet konekciju</p>
+    </ion-text>
+    <ion-text class="ion-text-center" color="primary">
+        <!--<p>Jedinstveni kod Vašeg uređaja je</p>-->
+        <h2>{{uuid}}</h2>
+    </ion-text>
+    <ion-button expand="full" color="primary" (click)="login()">
+        <ion-icon name="refresh"></ion-icon>
+    </ion-button>
+    <ion-button expand="full" color="danger" (click)="register()">
+        <ion-icon name="person-add"></ion-icon>
+    </ion-button>
+</ion-content>

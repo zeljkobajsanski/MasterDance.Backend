@@ -18,14 +18,20 @@ namespace MasterDance.WebUI.Security
         {
             if (context.UserName == "uuid")
             {
-                context.Result = new GrantValidationResult("mobile", "custom");
-                return;
+                var user = await _context.Users.SingleOrDefaultAsync(x => x.IsActive && x.UUID == context.Password);
+                if (user != null)
+                {
+                    context.Result = new GrantValidationResult(user.Id.ToString(), "custom");
+                }
             }
-            var user = await _context.Users.SingleOrDefaultAsync(x =>
-                x.Email == context.UserName && x.Password == context.Password && x.IsActive);
-            if (user != null)
+            else
             {
-                context.Result = new GrantValidationResult(user.Id.ToString(), "custom");
+                var user = await _context.Users.SingleOrDefaultAsync(x =>
+                    x.Email == context.UserName && x.Password == context.Password && x.IsActive);
+                if (user != null)
+                {
+                    context.Result = new GrantValidationResult(user.Id.ToString(), "custom");
+                }
             }
         }
     }
