@@ -2,16 +2,18 @@ import {Component, Input, OnInit} from '@angular/core';
 import {ModalController, ToastController} from '@ionic/angular';
 import {HttpClient, HttpParams} from '@angular/common/http';
 import {environment} from '../../../environments/environment';
+import {AuthService} from '../../services/auth.service';
 
 @Component({
   selector: 'app-login-failed',
   templateUrl: './login-failed.component.html',
-  styleUrls: ['./login-failed.component.scss']
+  // styleUrls: ['./login-failed.component.scss']
 })
 export class LoginFailedComponent implements OnInit {
 
   @Input() uuid;
-  constructor(private modalController: ModalController, private http: HttpClient, private toasts: ToastController) { }
+  constructor(private modalController: ModalController, private http: HttpClient, private toasts: ToastController,
+              private authService: AuthService) { }
 
   ngOnInit() {
   }
@@ -28,6 +30,7 @@ export class LoginFailedComponent implements OnInit {
               toast.present();
           },
         async err => {
+              console.log(err);
             const toast = await this.toasts.create({
                 message: 'Neuspešna registracija uređaja. Pokušajte ponovo...',
                 position: 'bottom',
@@ -40,25 +43,16 @@ export class LoginFailedComponent implements OnInit {
   }
 
   login() {
-      const payload = new HttpParams()
-          .set('grant_type', 'password')
-          .set('client_id', 'mobileapp')
-          .set('username', 'uuid')
-          .set('password', this.uuid);
-      this.http.post('http://localhost:5000/connect/token', payload,
-          {headers: {'Content-Type': 'application/x-www-form-urlencoded'}}).subscribe(
-          (token) => {
-              this.modalController.dismiss();
-           },
-          async err => {
-             const toast = await this.toasts.create({
-                 message: 'Neuspešna prijava na sistem. Pokušajte ponovo...',
-                 position: 'bottom',
-                 color: 'danger',
-                 duration: 2000
-             });
-             toast.present();
-          }
-      );
+      this.authService.login().then(() => {
+          this.modalController.dismiss();
+      }).catch(async () => {
+          const toast = await this.toasts.create({
+              message: 'Neuspešna prijava na sistem. Pokušajte ponovo...',
+              position: 'bottom',
+              color: 'danger',
+              duration: 2000
+          });
+          toast.present();
+      });
   }
 }
