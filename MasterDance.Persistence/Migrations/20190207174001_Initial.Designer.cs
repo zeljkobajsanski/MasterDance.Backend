@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MasterDance.Persistence.Migrations
 {
     [DbContext(typeof(MasterDanceDbContext))]
-    [Migration("20190207151816_Initial")]
+    [Migration("20190207174001_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

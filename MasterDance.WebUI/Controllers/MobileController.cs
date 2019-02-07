@@ -13,7 +13,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace MasterDance.WebUI.Controllers
 {
-    [AllowAnonymous]
+    //[AllowAnonymous]
     [Route("api/[controller]/[action]")]
     public class MobileController : BaseController
     {
@@ -41,7 +41,7 @@ namespace MasterDance.WebUI.Controllers
         [HttpPost]
         public async Task<ActionResult> SaveEvidence(SaveEvidenceModel model)
         {
-            model.CoachId = 1;
+            model.CoachId = GetUserId();
             await Mediator.Send(new SaveEvidenceCommand.Request(model));
             return Ok(true);
         }
@@ -60,6 +60,7 @@ namespace MasterDance.WebUI.Controllers
             return Ok(result);
         }
 
+        [AllowAnonymous]
         [HttpPost]
         public async Task<ActionResult> RegisterDevice([FromBody] RegisterDeviceCommand.Request request)
         {

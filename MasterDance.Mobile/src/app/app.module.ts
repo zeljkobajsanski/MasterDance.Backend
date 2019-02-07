@@ -8,12 +8,14 @@ import { StatusBar } from '@ionic-native/status-bar/ngx';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import {HttpClient, HttpClientModule} from '@angular/common/http';
+import {HTTP_INTERCEPTORS, HttpClient, HttpClientModule} from '@angular/common/http';
 import { Device } from '@ionic-native/device/ngx';
 import { SearchComponent } from './components/search/search.component';
 import {FilterPipe} from './components/search/filter.pipe';
 import {FormsModule} from '@angular/forms';
 import { LoginFailedComponent } from './components/login-failed/login-failed.component';
+import {AuthService} from './services/auth.service';
+import {AuthInterceptorService} from './services/auth-interceptor.service';
 
 @NgModule({
   declarations: [AppComponent, SearchComponent, FilterPipe, LoginFailedComponent],
@@ -23,7 +25,8 @@ import { LoginFailedComponent } from './components/login-failed/login-failed.com
     StatusBar,
     SplashScreen,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
-      Device
+      Device, AuthService,
+    {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptorService, multi: true}
   ],
   bootstrap: [AppComponent]
 })

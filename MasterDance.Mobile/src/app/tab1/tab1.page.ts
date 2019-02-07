@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {ToastController} from '@ionic/angular';
 import {environment} from '../../environments/environment';
+import {AuthService} from '../services/auth.service';
 
 @Component({
     selector: 'app-tab1',
@@ -34,14 +35,16 @@ export class Tab1Page {
     private _group;
 
 
-    constructor(private http: HttpClient, private toasts: ToastController) {
+    constructor(private http: HttpClient, private toasts: ToastController, private authService: AuthService) {
         this.date = new Date().toISOString();
 
-        this.http.get<any[]>(`${environment.webapi}/api/mobile/GetMemberGroups`).subscribe(
-            data => {
-                this.groups = data;
-            }
-        );
+        authService.authenticated.subscribe(() => {
+            this.http.get<any[]>(`${environment.webapi}/api/mobile/GetMemberGroups`).subscribe(
+                data => {
+                    this.groups = data;
+                }
+            );
+        });
     }
 
     load() {
