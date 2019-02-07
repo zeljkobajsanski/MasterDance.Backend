@@ -1076,6 +1076,290 @@ export class MembershipsProxy extends BaseProxy {
     }
 }
 
+export class MobileProxy extends BaseProxy {
+    private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
+        super();
+        this.http = http ? http : <any>window;
+        this.baseUrl = baseUrl ? baseUrl : "";
+    }
+
+    getMemberGroups(): Promise<FileResponse | null> {
+        let url_ = this.baseUrl + "/api/Mobile/GetMemberGroups";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ = <RequestInit>{
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processGetMemberGroups(_response);
+        });
+    }
+
+    protected processGetMemberGroups(response: Response): Promise<FileResponse | null> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200 || status === 206) {
+            const contentDisposition = response.headers ? response.headers.get("content-disposition") : undefined;
+            const fileNameMatch = contentDisposition ? /filename="?([^"]*?)"?(;|$)/g.exec(contentDisposition) : undefined;
+            const fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[1] : undefined;
+            return response.blob().then(blob => { return { fileName: fileName, data: blob, status: status, headers: _headers }; });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<FileResponse | null>(<any>null);
+    }
+
+    getEvidence(groupId: number | undefined): Promise<FileResponse | null> {
+        let url_ = this.baseUrl + "/api/Mobile/GetEvidence?";
+        if (groupId === null)
+            throw new Error("The parameter 'groupId' cannot be null.");
+        else if (groupId !== undefined)
+            url_ += "groupId=" + encodeURIComponent("" + groupId) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ = <RequestInit>{
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processGetEvidence(_response);
+        });
+    }
+
+    protected processGetEvidence(response: Response): Promise<FileResponse | null> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200 || status === 206) {
+            const contentDisposition = response.headers ? response.headers.get("content-disposition") : undefined;
+            const fileNameMatch = contentDisposition ? /filename="?([^"]*?)"?(;|$)/g.exec(contentDisposition) : undefined;
+            const fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[1] : undefined;
+            return response.blob().then(blob => { return { fileName: fileName, data: blob, status: status, headers: _headers }; });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<FileResponse | null>(<any>null);
+    }
+
+    saveEvidence(model: SaveEvidenceModel): Promise<FileResponse | null> {
+        let url_ = this.baseUrl + "/api/Mobile/SaveEvidence";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(model);
+
+        let options_ = <RequestInit>{
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json", 
+                "Accept": "application/json"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processSaveEvidence(_response);
+        });
+    }
+
+    protected processSaveEvidence(response: Response): Promise<FileResponse | null> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200 || status === 206) {
+            const contentDisposition = response.headers ? response.headers.get("content-disposition") : undefined;
+            const fileNameMatch = contentDisposition ? /filename="?([^"]*?)"?(;|$)/g.exec(contentDisposition) : undefined;
+            const fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[1] : undefined;
+            return response.blob().then(blob => { return { fileName: fileName, data: blob, status: status, headers: _headers }; });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<FileResponse | null>(<any>null);
+    }
+
+    getMembers(): Promise<FileResponse | null> {
+        let url_ = this.baseUrl + "/api/Mobile/GetMembers";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ = <RequestInit>{
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processGetMembers(_response);
+        });
+    }
+
+    protected processGetMembers(response: Response): Promise<FileResponse | null> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200 || status === 206) {
+            const contentDisposition = response.headers ? response.headers.get("content-disposition") : undefined;
+            const fileNameMatch = contentDisposition ? /filename="?([^"]*?)"?(;|$)/g.exec(contentDisposition) : undefined;
+            const fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[1] : undefined;
+            return response.blob().then(blob => { return { fileName: fileName, data: blob, status: status, headers: _headers }; });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<FileResponse | null>(<any>null);
+    }
+
+    makePayment(payment: PaymentModel): Promise<FileResponse | null> {
+        let url_ = this.baseUrl + "/api/Mobile/MakePayment";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(payment);
+
+        let options_ = <RequestInit>{
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json", 
+                "Accept": "application/json"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processMakePayment(_response);
+        });
+    }
+
+    protected processMakePayment(response: Response): Promise<FileResponse | null> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200 || status === 206) {
+            const contentDisposition = response.headers ? response.headers.get("content-disposition") : undefined;
+            const fileNameMatch = contentDisposition ? /filename="?([^"]*?)"?(;|$)/g.exec(contentDisposition) : undefined;
+            const fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[1] : undefined;
+            return response.blob().then(blob => { return { fileName: fileName, data: blob, status: status, headers: _headers }; });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<FileResponse | null>(<any>null);
+    }
+
+    registerDevice(request: Request2): Promise<FileResponse | null> {
+        let url_ = this.baseUrl + "/api/Mobile/RegisterDevice";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(request);
+
+        let options_ = <RequestInit>{
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json", 
+                "Accept": "application/json"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processRegisterDevice(_response);
+        });
+    }
+
+    protected processRegisterDevice(response: Response): Promise<FileResponse | null> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200 || status === 206) {
+            const contentDisposition = response.headers ? response.headers.get("content-disposition") : undefined;
+            const fileNameMatch = contentDisposition ? /filename="?([^"]*?)"?(;|$)/g.exec(contentDisposition) : undefined;
+            const fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[1] : undefined;
+            return response.blob().then(blob => { return { fileName: fileName, data: blob, status: status, headers: _headers }; });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<FileResponse | null>(<any>null);
+    }
+}
+
+export class PaymentCategoriesProxy extends BaseProxy {
+    private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
+        super();
+        this.http = http ? http : <any>window;
+        this.baseUrl = baseUrl ? baseUrl : "";
+    }
+
+    getPaymentCategories(): Promise<PaymentCategoryModel[] | null> {
+        let url_ = this.baseUrl + "/api/PaymentCategories";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ = <RequestInit>{
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processGetPaymentCategories(_response);
+        });
+    }
+
+    protected processGetPaymentCategories(response: Response): Promise<PaymentCategoryModel[] | null> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (resultData200 && resultData200.constructor === Array) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(PaymentCategoryModel.fromJS(item));
+            }
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<PaymentCategoryModel[] | null>(<any>null);
+    }
+}
+
 export class PaymentsProxy extends BaseProxy {
     private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
     private baseUrl: string;
@@ -1521,6 +1805,7 @@ export class MemberDetailsModel implements IMemberDetailsModel {
     memberGroupId?: number | undefined;
     attendGymnastics!: boolean;
     jmbg?: string | undefined;
+    paymentCategoryId?: number | undefined;
 
     constructor(data?: IMemberDetailsModel) {
         if (data) {
@@ -1552,6 +1837,7 @@ export class MemberDetailsModel implements IMemberDetailsModel {
             this.memberGroupId = data["memberGroupId"];
             this.attendGymnastics = data["attendGymnastics"];
             this.jmbg = data["jmbg"];
+            this.paymentCategoryId = data["paymentCategoryId"];
         }
     }
 
@@ -1583,6 +1869,7 @@ export class MemberDetailsModel implements IMemberDetailsModel {
         data["memberGroupId"] = this.memberGroupId;
         data["attendGymnastics"] = this.attendGymnastics;
         data["jmbg"] = this.jmbg;
+        data["paymentCategoryId"] = this.paymentCategoryId;
         return data; 
     }
 
@@ -1614,6 +1901,7 @@ export interface IMemberDetailsModel {
     memberGroupId?: number | undefined;
     attendGymnastics: boolean;
     jmbg?: string | undefined;
+    paymentCategoryId?: number | undefined;
 }
 
 export class ProblemDetails implements IProblemDetails {
@@ -2049,6 +2337,124 @@ export interface IMembershipsAndPayments {
     difference: number;
 }
 
+export class SaveEvidenceModel implements ISaveEvidenceModel {
+    coachId!: number;
+    date!: string;
+    members?: EvidenceModel[] | undefined;
+
+    constructor(data?: ISaveEvidenceModel) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.coachId = data["coachId"];
+            this.date = data["date"];
+            if (data["members"] && data["members"].constructor === Array) {
+                this.members = [] as any;
+                for (let item of data["members"])
+                    this.members!.push(EvidenceModel.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): SaveEvidenceModel {
+        data = typeof data === 'object' ? data : {};
+        let result = new SaveEvidenceModel();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["coachId"] = this.coachId;
+        data["date"] = this.date;
+        if (this.members && this.members.constructor === Array) {
+            data["members"] = [];
+            for (let item of this.members)
+                data["members"].push(item.toJSON());
+        }
+        return data; 
+    }
+
+    clone(): SaveEvidenceModel {
+        const json = this.toJSON();
+        let result = new SaveEvidenceModel();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface ISaveEvidenceModel {
+    coachId: number;
+    date: string;
+    members?: EvidenceModel[] | undefined;
+}
+
+export class EvidenceModel implements IEvidenceModel {
+    id!: number;
+    image?: string | undefined;
+    name?: string | undefined;
+    isSelected!: boolean;
+    evidenceId?: number | undefined;
+
+    constructor(data?: IEvidenceModel) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.id = data["id"];
+            this.image = data["image"];
+            this.name = data["name"];
+            this.isSelected = data["isSelected"];
+            this.evidenceId = data["evidenceId"];
+        }
+    }
+
+    static fromJS(data: any): EvidenceModel {
+        data = typeof data === 'object' ? data : {};
+        let result = new EvidenceModel();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["image"] = this.image;
+        data["name"] = this.name;
+        data["isSelected"] = this.isSelected;
+        data["evidenceId"] = this.evidenceId;
+        return data; 
+    }
+
+    clone(): EvidenceModel {
+        const json = this.toJSON();
+        let result = new EvidenceModel();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IEvidenceModel {
+    id: number;
+    image?: string | undefined;
+    name?: string | undefined;
+    isSelected: boolean;
+    evidenceId?: number | undefined;
+}
+
 export class PaymentModel implements IPaymentModel {
     dateTime!: string;
     amount!: number;
@@ -2100,9 +2506,106 @@ export interface IPaymentModel {
     memberId: number;
 }
 
+export class Request2 implements IRequest2 {
+    deviceId?: string | undefined;
+
+    constructor(data?: IRequest2) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.deviceId = data["deviceId"];
+        }
+    }
+
+    static fromJS(data: any): Request2 {
+        data = typeof data === 'object' ? data : {};
+        let result = new Request2();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["deviceId"] = this.deviceId;
+        return data; 
+    }
+
+    clone(): Request2 {
+        const json = this.toJSON();
+        let result = new Request2();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IRequest2 {
+    deviceId?: string | undefined;
+}
+
+export class PaymentCategoryModel implements IPaymentCategoryModel {
+    id!: number;
+    name?: string | undefined;
+
+    constructor(data?: IPaymentCategoryModel) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.id = data["id"];
+            this.name = data["name"];
+        }
+    }
+
+    static fromJS(data: any): PaymentCategoryModel {
+        data = typeof data === 'object' ? data : {};
+        let result = new PaymentCategoryModel();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["name"] = this.name;
+        return data; 
+    }
+
+    clone(): PaymentCategoryModel {
+        const json = this.toJSON();
+        let result = new PaymentCategoryModel();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IPaymentCategoryModel {
+    id: number;
+    name?: string | undefined;
+}
+
 export interface FileParameter {
     data: any;
     fileName: string;
+}
+
+export interface FileResponse {
+    data: Blob;
+    status: number;
+    fileName?: string;
+    headers?: { [name: string]: any };
 }
 
 export class SwaggerException extends Error {

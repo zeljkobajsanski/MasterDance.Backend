@@ -80,6 +80,15 @@
                                 </div>
                             </div>
                             <div class="form-group">
+                                <label class="control-label col-sm-4">Članarina</label>
+                                <div class="col-sm-8">
+                                    <select class="form-control input-transparent" v-select2="paymentCategoriesOptions" v-model="member.paymentCategoryId">
+                                        <option value="">-</option>
+                                        <option v-for="c in paymentCategories" :key="c.id" :value="c.id">{{c.name}}</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
                                 <label class="control-label col-sm-4">Clan od </label>
                                 <div class="col-sm-8">
                                     <date-picker class="date-picker form-control input-transparent"
@@ -207,9 +216,14 @@
     import prizes from '@/components/member-edit/Prizes.vue'
     import Memberships from '@/components/member-edit/Memberships.vue'
     import {State} from "vuex-class";
-    import {DocumentsProxy, DocumentTypesProxy, MemberDetailsModel, MembersProxy} from "@/services/BackendProxies";
+    import {
+        DocumentsProxy,
+        DocumentTypesProxy, IPaymentCategoryModel,
+        MemberDetailsModel,
+        MembersProxy,
+        PaymentCategoriesProxy
+    } from "@/services/BackendProxies";
 
-    //TODO: JMBG, IsActive, Gym
     @Component({components: {PageHeader, Widget, ImageEditModal, Tabs, Tab, AddDocumentDialog, documentsTable, prizes, Memberships}})
     export default class MemberEdit extends Vue {
         @State memberGroups;
@@ -222,18 +236,26 @@
             locale: 'sr',
             useCurrent: false
         };
+        paymentCategories: IPaymentCategoryModel[] = [];
+        paymentCategoriesOptions = {};
 
         private membersProxy = new MembersProxy();
         private documentsProxy = new DocumentsProxy();
         private documentTypesProxy = new DocumentTypesProxy();
+        private paymentCategoriesProxy = new PaymentCategoriesProxy();
 
         async created() {
+            this.paymentCategories = await this.paymentCategoriesProxy.getPaymentCategories();
+
             const memberId = +this.$route.params['id'];
             if (memberId) {
                 const data = await this.membersProxy.getMember(memberId);
                 this.member = data;
                 await this.refreshDocuments();
             }
+            setTimeout(async () => {
+
+            }, 3000);
         }
 
         async save() {

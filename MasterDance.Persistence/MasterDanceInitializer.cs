@@ -81,6 +81,8 @@ namespace MasterDance.Persistence
             {
                 context.DocumentTypes.Add(new DocumentType() { Name = "Izvod iz maticne knjige rodjenih" });
                 context.DocumentTypes.Add(new DocumentType() { Name = "Lekarski pregled" });
+                context.DocumentTypes.Add(new DocumentType() { Name = "Diploma" });
+                context.DocumentTypes.Add(new DocumentType() { Name = "Slika" });
                 context.SaveChanges();
             }
 
@@ -91,6 +93,32 @@ namespace MasterDance.Persistence
                     Key = Constants.SettingsKey.MembershipCalculator,
                     Value = "MasterDance.Application.UseCases.Memberships.MembershipCalculation.StandardMembershipCalculator"
                 });
+                context.SaveChanges();
+            }
+
+            if (!context.MemberGroups.Any())
+            {
+                context.MemberGroups.Add(new MemberGroup() {Name = "Grbavica - Bebe"});
+                context.MemberGroups.Add(new MemberGroup() {Name = "Grbavica - Početna"});
+                context.MemberGroups.Add(new MemberGroup() {Name = "Grbavica - Deca"});
+                context.MemberGroups.Add(new MemberGroup() {Name = "Grbavica - Pčelice"});
+                context.MemberGroups.Add(new MemberGroup() {Name = "Grbavica - Juniori"});
+                context.MemberGroups.Add(new MemberGroup() {Name = "Srbobran - Pčelice"});
+                context.MemberGroups.Add(new MemberGroup() {Name = "Srbobran - Juniori"});
+                context.MemberGroups.Add(new MemberGroup() {Name = "Tesla - I Razred"});
+                context.MemberGroups.Add(new MemberGroup() {Name = "Tesla - II Razred"});
+                context.MemberGroups.Add(new MemberGroup() {Name = "Klisa - Deca"});
+                context.SaveChanges();
+            }
+
+            if (!context.PaymentCategories.Any())
+            {
+                context.PaymentCategories.Add(new PaymentCategory() {Name = "Oslobođen plaćanja"});
+                context.PaymentCategories.Add(new PaymentCategory() {Name = "Redovna članarina", Price = 2500});
+                context.PaymentCategories.Add(new PaymentCategory() {Name = "Juniori", Price = 3000});
+                context.PaymentCategories.Add(new PaymentCategory() {Name = "Srbobran", Price = 1500});
+                context.PaymentCategories.Add(new PaymentCategory() {Name = "Klisa", Price = 2000});
+                context.PaymentCategories.Add(new PaymentCategory() {Name = "Tesla", Price = 1800});
                 context.SaveChanges();
             }
 
@@ -115,6 +143,18 @@ namespace MasterDance.Persistence
                     {
                         FirstName = "Zeljko",
                         LastName = "Bajsanski",
+                    }
+                });
+                context.Users.Add(new User()
+                {
+                    Email = "d.demic@hotmail.com",
+                    Password = "1234",
+                    IsActive = true,
+                    Role = "Administrator",
+                    Person = new Person()
+                    {
+                        FirstName = "Duca",
+                        LastName = "Jovanović",
                     }
                 });
                 context.SaveChanges();

@@ -7,7 +7,6 @@ const updateComponent = (el, binding) => {
     // get options from binding value.
     // v-select="THIS-IS-THE-BINDING-VALUE"
     let options = binding.value || {width: '100%'};
-
     // set up select2
     $(el).select2(options).on("select2:select", (e) => {
         // v-model looks for

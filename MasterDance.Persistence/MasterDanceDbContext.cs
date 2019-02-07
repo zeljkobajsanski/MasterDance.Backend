@@ -29,6 +29,8 @@ namespace MasterDance.Persistence
         public DbSet<User> Users { get; set; }
         public DbSet<Evidence> Evidences { get; set; }
         public DbQuery<QueryTypes.Evidence> EvidencesQuery { get; set; }
+        public DbSet<PaymentCategory> PaymentCategories { get; set; }
+        public DbSet<PaymentException> PaymentExceptions { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

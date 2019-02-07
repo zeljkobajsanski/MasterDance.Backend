@@ -50,6 +50,20 @@ namespace MasterDance.Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "PaymentCategories",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Name = table.Column<string>(maxLength: 128, nullable: false),
+                    Price = table.Column<decimal>(type: "money", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PaymentCategories", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Settings",
                 columns: table => new
                 {
@@ -100,7 +114,8 @@ namespace MasterDance.Persistence.Migrations
                     MotherPhone = table.Column<string>(maxLength: 255, nullable: true),
                     MemberGroupId = table.Column<int>(nullable: true),
                     Dance = table.Column<bool>(nullable: true, defaultValueSql: "1"),
-                    Gymnastics = table.Column<bool>(nullable: true)
+                    Gymnastics = table.Column<bool>(nullable: true),
+                    PaymentCategoryId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -109,6 +124,12 @@ namespace MasterDance.Persistence.Migrations
                         name: "FK_Persons_Groups_MemberGroupId",
                         column: x => x.MemberGroupId,
                         principalTable: "Groups",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Persons_PaymentCategories_PaymentCategoryId",
+                        column: x => x.PaymentCategoryId,
+                        principalTable: "PaymentCategories",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -217,6 +238,28 @@ namespace MasterDance.Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "PaymentExceptions",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    MemberId = table.Column<int>(nullable: true),
+                    Year = table.Column<int>(nullable: false),
+                    Month = table.Column<int>(nullable: false),
+                    Price = table.Column<decimal>(type: "money", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PaymentExceptions", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_PaymentExceptions_Persons_MemberId",
+                        column: x => x.MemberId,
+                        principalTable: "Persons",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Prizes",
                 columns: table => new
                 {
@@ -251,9 +294,9 @@ namespace MasterDance.Persistence.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    Email = table.Column<string>(maxLength: 255, nullable: false),
-                    Password = table.Column<string>(maxLength: 255, nullable: false),
-                    IMEI = table.Column<string>(maxLength: 255, nullable: true),
+                    Email = table.Column<string>(maxLength: 255, nullable: true),
+                    Password = table.Column<string>(maxLength: 255, nullable: true),
+                    UUID = table.Column<string>(maxLength: 255, nullable: true),
                     IsActive = table.Column<bool>(nullable: false),
                     Role = table.Column<string>(maxLength: 255, nullable: true),
                     PersonId = table.Column<int>(nullable: true)
@@ -328,6 +371,11 @@ namespace MasterDance.Persistence.Migrations
                 column: "MemberId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_PaymentExceptions_MemberId",
+                table: "PaymentExceptions",
+                column: "MemberId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Payments_CreatorId",
                 table: "Payments",
                 column: "CreatorId");
@@ -341,6 +389,11 @@ namespace MasterDance.Persistence.Migrations
                 name: "IX_Persons_MemberGroupId",
                 table: "Persons",
                 column: "MemberGroupId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Persons_PaymentCategoryId",
+                table: "Persons",
+                column: "PaymentCategoryId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Prizes_CompetitionId",
@@ -368,6 +421,9 @@ namespace MasterDance.Persistence.Migrations
 
             migrationBuilder.DropTable(
                 name: "MemberImages");
+
+            migrationBuilder.DropTable(
+                name: "PaymentExceptions");
 
             migrationBuilder.DropTable(
                 name: "Payments");
@@ -398,6 +454,9 @@ namespace MasterDance.Persistence.Migrations
 
             migrationBuilder.DropTable(
                 name: "Groups");
+
+            migrationBuilder.DropTable(
+                name: "PaymentCategories");
         }
     }
 }

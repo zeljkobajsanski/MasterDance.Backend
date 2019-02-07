@@ -23,6 +23,7 @@ namespace MasterDance.Application.UseCases.Members.Models
                 MemberGroupId = detailsModel.MemberGroupId,
                 Gymnastics = detailsModel.AttendGymnastics,
                 JMBG = detailsModel.JMBG,
+                PaymentCategoryId = detailsModel.PaymentCategoryId
             };
         }
 
@@ -45,7 +46,8 @@ namespace MasterDance.Application.UseCases.Members.Models
                 MotherContactPhone = member.Mother.Phone,
                 AttendGymnastics = member.Gymnastics,
                 MemberGroupId = member.MemberGroupId,
-                JMBG = member.JMBG
+                JMBG = member.JMBG,
+                PaymentCategoryId = member.PaymentCategoryId
             };
         }
 

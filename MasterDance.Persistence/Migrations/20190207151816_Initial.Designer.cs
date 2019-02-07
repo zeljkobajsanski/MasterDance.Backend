@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MasterDance.Persistence.Migrations
 {
     [DbContext(typeof(MasterDanceDbContext))]
-    [Migration("20190205074129_Initial")]
+    [Migration("20190207151816_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -186,6 +186,46 @@ namespace MasterDance.Persistence.Migrations
                     b.ToTable("Payments");
                 });
 
+            modelBuilder.Entity("MasterDance.Domain.Entities.PaymentCategory", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(128);
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("money");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("PaymentCategories");
+                });
+
+            modelBuilder.Entity("MasterDance.Domain.Entities.PaymentException", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int?>("MemberId");
+
+                    b.Property<int>("Month");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("money");
+
+                    b.Property<int>("Year");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MemberId");
+
+                    b.ToTable("PaymentExceptions");
+                });
+
             modelBuilder.Entity("MasterDance.Domain.Entities.Person", b =>
                 {
                     b.Property<int>("Id")
@@ -290,21 +330,19 @@ namespace MasterDance.Persistence.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Email")
-                        .IsRequired()
-                        .HasMaxLength(255);
-
-                    b.Property<string>("IMEI")
                         .HasMaxLength(255);
 
                     b.Property<bool>("IsActive");
 
                     b.Property<string>("Password")
-                        .IsRequired()
                         .HasMaxLength(255);
 
                     b.Property<int?>("PersonId");
 
                     b.Property<string>("Role")
+                        .HasMaxLength(255);
+
+                    b.Property<string>("UUID")
                         .HasMaxLength(255);
 
                     b.HasKey("Id");
@@ -341,7 +379,11 @@ namespace MasterDance.Persistence.Migrations
 
                     b.Property<int?>("MemberGroupId");
 
+                    b.Property<int?>("PaymentCategoryId");
+
                     b.HasIndex("MemberGroupId");
+
+                    b.HasIndex("PaymentCategoryId");
 
                     b.HasDiscriminator().HasValue("Member");
                 });
@@ -455,6 +497,13 @@ namespace MasterDance.Persistence.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
+            modelBuilder.Entity("MasterDance.Domain.Entities.PaymentException", b =>
+                {
+                    b.HasOne("MasterDance.Domain.Entities.Member", "Member")
+                        .WithMany("PaymentExceptions")
+                        .HasForeignKey("MemberId");
+                });
+
             modelBuilder.Entity("MasterDance.Domain.Entities.Person", b =>
                 {
                     b.OwnsOne("MasterDance.Domain.ValueObjects.Contact", "Contact", b1 =>
@@ -511,6 +560,10 @@ namespace MasterDance.Persistence.Migrations
                     b.HasOne("MasterDance.Domain.Entities.MemberGroup", "MemberGroup")
                         .WithMany("Members")
                         .HasForeignKey("MemberGroupId");
+
+                    b.HasOne("MasterDance.Domain.Entities.PaymentCategory", "PaymentCategory")
+                        .WithMany("Members")
+                        .HasForeignKey("PaymentCategoryId");
 
                     b.OwnsOne("MasterDance.Domain.ValueObjects.Parent", "Father", b1 =>
                         {

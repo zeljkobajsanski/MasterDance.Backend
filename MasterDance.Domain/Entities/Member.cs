@@ -27,5 +27,8 @@ namespace MasterDance.Domain.Entities
         public int? MemberGroupId { get; set; }
         public bool Dance { get; set; }
         public bool Gymnastics { get; set; }
+        public ICollection<PaymentException> PaymentExceptions { get; set; }
+        public PaymentCategory PaymentCategory { get; set; }
+        public int? PaymentCategoryId { get; set; }
     }
 }
