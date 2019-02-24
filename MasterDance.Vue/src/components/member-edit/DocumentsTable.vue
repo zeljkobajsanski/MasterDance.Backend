@@ -5,6 +5,9 @@
             <object :data="previewDocumentUrl" width="100%" height="600"></object>
         </modal-dialog>
         <widget>
+            <div v-if="isLoading">
+                <i class="fa fa-spinner fa-spin fa-2x"></i> Dokument se učitava...
+            </div>
             <table class="table">
                 <thead>
                 <tr>
@@ -48,6 +51,7 @@
     export default class DocumentsTable extends Vue {
         @Prop({default: () => []}) documents!: any[];
         @Prop() member: MemberModel;
+        isLoading = false;
 
         documentUrl: string = null;
         fileName: string = null;
@@ -72,7 +76,9 @@
         }
 
         async download(documentId) {
+            this.isLoading = true;
             const data = await this.documentsProxy.getDocument(documentId);
+            this.isLoading = false;
             this.fileName = data.fileName;
             this.documentUrl = data.content;
             this.$nextTick(() => {
@@ -81,7 +87,9 @@
         }
 
         async preview(documentId) {
+            this.isLoading = true;
             const data = await this.documentsProxy.getDocument(documentId);
+            this.isLoading = false;
             this.previewDocumentUrl = `data:${data.contentType};base64,${data.content}`;
             this.$nextTick(() => {
                 (<ModalDialog>this.$refs['documentPreview']).open();

@@ -238,9 +238,11 @@
     import Vue from 'vue';
     import {Prop, Component, Watch} from 'vue-property-decorator';
     import authProxy from '@/services/AuthenticationProxy'
+    import {Mutation} from "vuex-class";
 
     @Component({})
     export default class PageWrapper extends Vue {
+        @Mutation setSearchTerm;
 
         logout() {
             authProxy.logout();

@@ -19,21 +19,21 @@ namespace MasterDance.WebUI
         {
             var host = CreateWebHostBuilder(args).Build();
 
-            using (var scope = host.Services.CreateScope())
-            {
-                try
-                {
-                    var context = scope.ServiceProvider.GetService<MasterDanceDbContext>();
-                    context.Database.Migrate();
+            //using (var scope = host.Services.GetService<IServiceScopeFactory>().CreateScope())
+            //{
+            //    try
+            //    {
+            //        var context = scope.ServiceProvider.GetService<MasterDanceDbContext>();
+            //        //context.Database.Migrate();
 
-                    MasterDanceInitializer.Initialize(context);
-                }
-                catch (Exception ex)
-                {
-                    var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
-                    logger.LogError(ex, "An error occurred while migrating or initializing the database.");
-                }
-            }
+            //        //MasterDanceInitializer.Initialize(context);
+            //    }
+            //    catch (Exception ex)
+            //    {
+            //        var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+            //        logger.LogError(ex, "An error occurred while migrating or initializing the database.");
+            //    }
+            //}
 
             host.Run();
         }
