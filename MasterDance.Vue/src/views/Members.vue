@@ -21,7 +21,7 @@
                 </div>
                 <div class="col-md-12 mt-md">
                     <ul class="row thumbnails">
-                        <li class="col-sm-3" v-for="member in filteredMembers" :key="member.id">
+                        <li class="col-xs-6 col-sm-3 col-md-2 col-lg-2" v-for="member in filteredMembers" :key="member.id">
                             <div class="thumbnail">
                                 <img :src="member.image || 'img/2.png'" alt="">
                                 <div class="caption">
